@@ -21,15 +21,17 @@ public class BillingSystem {
         callLog.add(new CallEnd(caller, callee));
     }
 
-    public void createCustomerBills() {
+    public List<Bill> createCustomerBills() {
+        List<Bill> bills = new ArrayList<Bill>();
         List<Customer> customers = CentralCustomerDatabase.getInstance().getCustomers();
         for (Customer customer : customers) {
-            createBillFor(customer);
+            bills.add(createBillFor(customer));
         }
         callLog.clear();
+        return bills;
     }
 
-    private void createBillFor(Customer customer) {
+    private Bill createBillFor(Customer customer) {
         List<CallEvent> customerEvents = new ArrayList<CallEvent>();
         for (CallEvent callEvent : callLog) {
             if (callEvent.getCaller().equals(customer.getPhoneNumber())) {
@@ -72,8 +74,7 @@ public class BillingSystem {
             items.add(new LineItem(call, callCost));
         }
 
-        Bill bill = new Bill(customer, items, MoneyFormatter.penceToPounds(totalBill));
-        bill.send();
+        return new Bill(customer, items, MoneyFormatter.penceToPounds(totalBill));
     }
 
     static class LineItem {
