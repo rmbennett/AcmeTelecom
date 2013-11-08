@@ -9,8 +9,6 @@ public class Bill {
     protected List<BillingSystem.LineItem> calls;
     protected String totalBill;
 
-
-    // This class only has static methods. Make it non-inheritable, and instantiable
     public Bill(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {
         setCustomer(customer);
         setCalls(calls);
