@@ -13,12 +13,20 @@ public class BillingSystem {
 
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
 
+    public void callInitiated(String caller, String callee, long timeStamp) {
+        callLog.add(new CallStart(caller, callee, timeStamp));
+    }
+
     public void callInitiated(String caller, String callee) {
-        callLog.add(new CallStart(caller, callee));
+        callInitiated(caller, callee, timeNow());
+    }
+
+    public void callCompleted(String caller, String callee, long timeStamp) {
+        callLog.add(new CallEnd(caller, callee, timeStamp));
     }
 
     public void callCompleted(String caller, String callee) {
-        callLog.add(new CallEnd(caller, callee));
+        callLog.add(new CallEnd(caller, callee, timeNow()));
     }
 
     public List<Bill> createCustomerBills() {
@@ -29,6 +37,10 @@ public class BillingSystem {
         }
         callLog.clear();
         return bills;
+    }
+
+    private long timeNow() {
+        return System.currentTimeMillis();
     }
 
     private Bill createBillFor(Customer customer) {
