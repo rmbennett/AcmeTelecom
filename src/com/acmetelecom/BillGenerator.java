@@ -6,6 +6,10 @@ import java.util.List;
 
 public class BillGenerator {
 
+    // This class only has static methods. Make it non-inheritable, and instantiable
+    private BillGenerator() {
+    }
+
     public static void send(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {
 
         Printer printer = HtmlPrinter.getInstance();
