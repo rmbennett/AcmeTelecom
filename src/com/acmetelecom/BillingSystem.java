@@ -72,7 +72,8 @@ public class BillingSystem {
             items.add(new LineItem(call, callCost));
         }
 
-        BillGenerator.send(customer, items, MoneyFormatter.penceToPounds(totalBill));
+        Bill bill = new Bill(customer, items, MoneyFormatter.penceToPounds(totalBill));
+        bill.send();
     }
 
     static class LineItem {
