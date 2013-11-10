@@ -79,7 +79,7 @@ public class BillingSystem {
 
         for (Call call : calls) {
 
-            Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
+            Tariff tariff = tariffDatabase.tarriffFor(customer);
 
             BigDecimal cost;
 
