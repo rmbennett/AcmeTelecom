@@ -49,19 +49,72 @@ public class BillingSystemTest {
         }
     }
 
+    /*
+        Five minutes of peak calls for all three account types
+        Total:
+            - Standard: 150p
+            - Business: 90p
+            - Leisure: 240p
+
+     */
     @Test
     public void testPeakCalls() {
+        billingSystem.callInitiated("1", "2", getTimestamp(15, 0));
+        billingSystem.callCompleted("1", "2", getTimestamp(15, 5));
+
+        billingSystem.callInitiated("2", "1", getTimestamp(15, 10));
+        billingSystem.callCompleted("2", "1", getTimestamp(15, 15));
+
+
+        billingSystem.callInitiated("3", "2", getTimestamp(15, 20));
+        billingSystem.callCompleted("3", "2", getTimestamp(15, 25));
+
+        List<Bill> bills = billingSystem.createCustomerBills();
+
+        for (Bill bill : bills) {
+            if (MockCustomerDatabase.isStandard(bill.getCustomer())) {
+                assertEquals("1.50", bill.getTotalBill());
+            } else if (MockCustomerDatabase.isBusiness(bill.getCustomer())) {
+                assertEquals("0.90", bill.getTotalBill());
+            } else if (MockCustomerDatabase.isLeisure((bill.getCustomer()))) {
+                assertEquals("2.40", bill.getTotalBill());
+            }
+        }
 
     }
+
+     /*
+        Five minutes of overlapping calls for all three account types
+        Total:
+            - Standard: 150p
+            - Business: 90p
+            - Leisure: 240p
+
+     */
 
     @Test
     public void testOverlapCalls() {
+        billingSystem.callInitiated("1", "2", getTimestamp(18, 59));
+        billingSystem.callCompleted("1", "2", getTimestamp(19, 4));
 
-    }
+        billingSystem.callInitiated("2", "1", getTimestamp(18, 59));
+        billingSystem.callCompleted("2", "1", getTimestamp(19, 4));
 
-    @Test
-    public void testIncompleteCalls() {
 
+        billingSystem.callInitiated("3", "2", getTimestamp(18, 59));
+        billingSystem.callCompleted("3", "2", getTimestamp(19, 4));
+
+        List<Bill> bills = billingSystem.createCustomerBills();
+
+        for (Bill bill : bills) {
+            if (MockCustomerDatabase.isStandard(bill.getCustomer())) {
+                assertEquals("1.50", bill.getTotalBill());
+            } else if (MockCustomerDatabase.isBusiness(bill.getCustomer())) {
+                assertEquals("0.90", bill.getTotalBill());
+            } else if (MockCustomerDatabase.isLeisure((bill.getCustomer()))) {
+                assertEquals("2.40", bill.getTotalBill());
+            }
+        }
     }
 
     private long getTimestamp(int hour, int minute) {
