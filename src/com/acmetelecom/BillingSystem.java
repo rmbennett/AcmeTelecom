@@ -26,7 +26,7 @@ public class BillingSystem {
     }
 
     public void callCompleted(String caller, String callee) {
-        callLog.add(new CallEnd(caller, callee, timeNow()));
+        callCompleted(caller, callee, timeNow());
     }
 
     public List<Bill> createCustomerBills() {
