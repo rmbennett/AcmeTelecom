@@ -13,23 +13,37 @@ public class BillingSystem {
 
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
 
+    public void callInitiated(String caller, String callee, long timeStamp) {
+        callLog.add(new CallStart(caller, callee, timeStamp));
+    }
+
     public void callInitiated(String caller, String callee) {
-        callLog.add(new CallStart(caller, callee));
+        callInitiated(caller, callee, timeNow());
+    }
+
+    public void callCompleted(String caller, String callee, long timeStamp) {
+        callLog.add(new CallEnd(caller, callee, timeStamp));
     }
 
     public void callCompleted(String caller, String callee) {
-        callLog.add(new CallEnd(caller, callee));
+        callLog.add(new CallEnd(caller, callee, timeNow()));
     }
 
-    public void createCustomerBills() {
+    public List<Bill> createCustomerBills() {
+        List<Bill> bills = new ArrayList<Bill>();
         List<Customer> customers = CentralCustomerDatabase.getInstance().getCustomers();
         for (Customer customer : customers) {
-            createBillFor(customer);
+            bills.add(createBillFor(customer));
         }
         callLog.clear();
+        return bills;
     }
 
-    private void createBillFor(Customer customer) {
+    private long timeNow() {
+        return System.currentTimeMillis();
+    }
+
+    private Bill createBillFor(Customer customer) {
         List<CallEvent> customerEvents = new ArrayList<CallEvent>();
         for (CallEvent callEvent : callLog) {
             if (callEvent.getCaller().equals(customer.getPhoneNumber())) {
@@ -72,7 +86,7 @@ public class BillingSystem {
             items.add(new LineItem(call, callCost));
         }
 
-        new BillGenerator().send(customer, items, MoneyFormatter.penceToPounds(totalBill));
+        return new Bill(customer, items, MoneyFormatter.penceToPounds(totalBill));
     }
 
     static class LineItem {

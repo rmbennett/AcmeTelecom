@@ -1,5 +1,7 @@
 package com.acmetelecom;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: rmb209
@@ -21,7 +23,11 @@ public class Runner {
         billingSystem.callInitiated("447777765432", "447711111111");
         sleepSeconds(60);
         billingSystem.callCompleted("447777765432", "447711111111");
-        billingSystem.createCustomerBills();
+        List<Bill> bills = billingSystem.createCustomerBills();
+
+        for (Bill bill : bills) {
+            bill.send();
+        }
     }
     private static void sleepSeconds(int n) throws InterruptedException {
         Thread.sleep(n * 1000);
