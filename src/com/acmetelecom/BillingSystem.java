@@ -18,8 +18,8 @@ public class BillingSystem {
     }
 
     public BillingSystem() {
-        this((CustomerDatabase) CentralCustomerDatabase.getInstance(),
-                (TariffLibrary) CentralTariffDatabase.getInstance());
+        this(CentralCustomerDatabase.getInstance(),
+                CentralTariffDatabase.getInstance());
     }
 
 
@@ -83,8 +83,7 @@ public class BillingSystem {
 
             BigDecimal cost;
 
-            DaytimePeakPeriod peakPeriod = new DaytimePeakPeriod();
-            if (peakPeriod.offPeak(call.startTime()) && peakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
+            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
                 cost = new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate());
             } else {
                 cost = new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate());
