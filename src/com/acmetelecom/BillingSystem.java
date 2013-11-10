@@ -1,9 +1,6 @@
 package com.acmetelecom;
 
-import com.acmetelecom.customer.CentralCustomerDatabase;
-import com.acmetelecom.customer.CentralTariffDatabase;
-import com.acmetelecom.customer.Customer;
-import com.acmetelecom.customer.Tariff;
+import com.acmetelecom.customer.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +9,19 @@ import java.util.*;
 public class BillingSystem {
 
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
+    private CustomerDatabase customerDatabase;
+    private TariffLibrary tariffDatabase;
+
+    public BillingSystem(CustomerDatabase customerDatabase, TariffLibrary tariffDatabase) {
+        this.customerDatabase = customerDatabase;
+        this.tariffDatabase = tariffDatabase;
+    }
+
+    public BillingSystem() {
+        this((CustomerDatabase) CentralCustomerDatabase.getInstance(),
+                (TariffLibrary) CentralTariffDatabase.getInstance());
+    }
+
 
     public void callInitiated(String caller, String callee, long timeStamp) {
         callLog.add(new CallStart(caller, callee, timeStamp));
@@ -26,12 +36,12 @@ public class BillingSystem {
     }
 
     public void callCompleted(String caller, String callee) {
-        callLog.add(new CallEnd(caller, callee, timeNow()));
+        callCompleted(caller, callee, timeNow());
     }
 
     public List<Bill> createCustomerBills() {
         List<Bill> bills = new ArrayList<Bill>();
-        List<Customer> customers = CentralCustomerDatabase.getInstance().getCustomers();
+        List<Customer> customers = customerDatabase.getCustomers();
         for (Customer customer : customers) {
             bills.add(createBillFor(customer));
         }
@@ -69,7 +79,7 @@ public class BillingSystem {
 
         for (Call call : calls) {
 
-            Tariff tariff = CentralTariffDatabase.getInstance().tarriffFor(customer);
+            Tariff tariff = tariffDatabase.tarriffFor(customer);
 
             BigDecimal cost;
 
