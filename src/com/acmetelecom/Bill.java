@@ -2,14 +2,15 @@ package com.acmetelecom;
 
 import com.acmetelecom.customer.Customer;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Bill {
     protected Customer customer;
     protected List<BillingSystem.LineItem> calls;
-    protected String totalBill;
+    protected BigDecimal totalBill;
 
-    public Bill(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {
+    public Bill(Customer customer, List<BillingSystem.LineItem> calls, BigDecimal totalBill) {
         this.customer = customer;
         this.calls = calls;
         this.totalBill = totalBill;
@@ -23,7 +24,7 @@ public class Bill {
         return calls;
     }
 
-    public String getTotalBill() {
+    public BigDecimal getTotalBill() {
         return totalBill;
     }
 
@@ -33,7 +34,7 @@ public class Bill {
         for (BillingSystem.LineItem call : calls) {
             printer.printItem(call.date(), call.callee(), call.durationMinutes(), MoneyFormatter.penceToPounds(call.cost()));
         }
-        printer.printTotal(totalBill);
+        printer.printTotal(MoneyFormatter.penceToPounds(totalBill));
     }
 
 }

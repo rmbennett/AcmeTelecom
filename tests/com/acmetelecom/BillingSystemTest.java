@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,11 @@ public class BillingSystemTest {
 
         for (Bill bill : bills) {
             if (MockCustomerDatabase.isStandard(bill.getCustomer())) {
-                assertEquals("0.60", bill.getTotalBill());
+                assertEquals(new BigDecimal(0.60), bill.getTotalBill());
             } else if (MockCustomerDatabase.isBusiness(bill.getCustomer())) {
-                assertEquals("0.90", bill.getTotalBill());
+                assertEquals(new BigDecimal(0.90), bill.getTotalBill());
             } else if (MockCustomerDatabase.isLeisure((bill.getCustomer()))) {
-                assertEquals("0.30", bill.getTotalBill());
+                assertEquals(new BigDecimal(0.30), bill.getTotalBill());
             }
         }
     }
@@ -73,11 +74,11 @@ public class BillingSystemTest {
 
         for (Bill bill : bills) {
             if (MockCustomerDatabase.isStandard(bill.getCustomer())) {
-                assertEquals("1.50", bill.getTotalBill());
+                assertEquals(new BigDecimal(1.5), bill.getTotalBill());
             } else if (MockCustomerDatabase.isBusiness(bill.getCustomer())) {
-                assertEquals("0.90", bill.getTotalBill());
+                assertEquals(new BigDecimal(0.9), bill.getTotalBill());
             } else if (MockCustomerDatabase.isLeisure((bill.getCustomer()))) {
-                assertEquals("2.40", bill.getTotalBill());
+                assertEquals(new BigDecimal(2.4), bill.getTotalBill());
             }
         }
 
@@ -108,11 +109,11 @@ public class BillingSystemTest {
 
         for (Bill bill : bills) {
             if (MockCustomerDatabase.isStandard(bill.getCustomer())) {
-                assertEquals("1.50", bill.getTotalBill());
+                assertEquals(new BigDecimal(1.5), bill.getTotalBill());
             } else if (MockCustomerDatabase.isBusiness(bill.getCustomer())) {
-                assertEquals("0.90", bill.getTotalBill());
+                assertEquals(new BigDecimal(0.9), bill.getTotalBill());
             } else if (MockCustomerDatabase.isLeisure((bill.getCustomer()))) {
-                assertEquals("2.40", bill.getTotalBill());
+                assertEquals(new BigDecimal(2.4), bill.getTotalBill());
             }
         }
     }

@@ -95,7 +95,7 @@ public class BillingSystem {
             items.add(new LineItem(call, callCost));
         }
 
-        return new Bill(customer, items, MoneyFormatter.penceToPounds(totalBill));
+        return new Bill(customer, items, totalBill);
     }
 
     static class LineItem {
