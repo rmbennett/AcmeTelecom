@@ -18,8 +18,8 @@ public class BillingSystem {
     }
 
     public BillingSystem() {
-        this((CustomerDatabase) CentralCustomerDatabase.getInstance(),
-                (TariffLibrary) CentralTariffDatabase.getInstance());
+        this(CentralCustomerDatabase.getInstance(),
+                CentralTariffDatabase.getInstance());
     }
 
 
