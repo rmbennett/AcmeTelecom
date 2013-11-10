@@ -10,33 +10,21 @@ public class Bill {
     protected String totalBill;
 
     public Bill(Customer customer, List<BillingSystem.LineItem> calls, String totalBill) {
-        setCustomer(customer);
-        setCalls(calls);
-        setTotalBill(totalBill);
+        this.customer = customer;
+        this.calls = calls;
+        this.totalBill = totalBill;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public List<BillingSystem.LineItem> getCalls() {
         return calls;
     }
 
-    public void setCalls(List<BillingSystem.LineItem> calls) {
-        this.calls = calls;
-    }
-
     public String getTotalBill() {
         return totalBill;
-    }
-
-    public void setTotalBill(String totalBill) {
-        this.totalBill = totalBill;
     }
 
     public void send() {
