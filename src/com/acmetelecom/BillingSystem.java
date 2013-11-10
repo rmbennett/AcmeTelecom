@@ -111,6 +111,10 @@ public class BillingSystem {
             return call.date();
         }
 
+        public String caller() {
+            return call.caller();
+        }
+
         public String callee() {
             return call.callee();
         }
