@@ -13,13 +13,13 @@ public class DaytimePeakPeriodTest {
     public void testOffPeak() {
         Date time = new Date();
         time.setHours(21);
-        assertTrue(DaytimePeakPeriod.offPeak(time));
+        assertTrue("Hour 21 is off-peak", DaytimePeakPeriod.offPeak(time));
     }
 
     @Test
     public void testPeak() {
         Date time = new Date();
         time.setHours(15);
-        assertFalse(DaytimePeakPeriod.offPeak(time));
+        assertFalse("Hour 15 is peak", DaytimePeakPeriod.offPeak(time));
     }
 }
