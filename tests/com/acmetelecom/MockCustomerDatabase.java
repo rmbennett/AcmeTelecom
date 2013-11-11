@@ -41,14 +41,14 @@ public class MockCustomerDatabase implements CustomerDatabase {
     }
 
     // Convenience method for test
-    public Customer getCustomer(String phoneNumber) {
+    public Customer getCustomer(String phoneNumber) throws NoSuchFieldException {
         for (Customer customer : customers) {
             if (customer.getPhoneNumber().equals(phoneNumber)) {
                 return customer;
             }
         }
 
-        return null;
+        throw new NoSuchFieldException();
     }
 
     public static enum MockCustomers {
