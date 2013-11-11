@@ -5,6 +5,10 @@ import java.util.Date;
 
 class DaytimePeakPeriod {
 
+    //Time in hours
+    public static final int peakStartTime = 7;
+    public static final int peakEndTime = 19;
+
     private DaytimePeakPeriod() {
 
     }
@@ -13,6 +17,6 @@ class DaytimePeakPeriod {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        return hour < 7 || hour >= 19;
+        return hour < peakStartTime || hour >= peakEndTime;
     }
 }

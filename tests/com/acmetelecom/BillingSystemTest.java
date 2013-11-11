@@ -59,24 +59,24 @@ public class BillingSystemTest {
             int peakDuration, offPeakDuration;
             BigDecimal peakCost, offPeakCost;
 
-            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
+            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) &&
+                    call.durationSeconds() < 12 * 60 * 60) {
                 // Off-peak charges
                 peakDuration = 0;
                 offPeakDuration = call.durationSeconds();
-
-            } else if (nonOverlap && DaytimePeakPeriod.offPeak(call.startTime()) &&
-                    DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() >= 12 * 60 * 60) {
-                peakDuration = (int) (((getTimestamp(19, 00) - getTimestamp(7, 00)) / 1000));
+            } else if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) &&
+                    call.durationSeconds() >= 12 * 60 * 60 && nonOverlap ) {
+                peakDuration = (int) (((getTimestamp(DaytimePeakPeriod.peakEndTime, 00) -
+                        getTimestamp(DaytimePeakPeriod.peakStartTime, 00)) / 1000));
                 offPeakDuration = call.durationSeconds() - peakDuration;
-            } else if (nonOverlap && !DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
-                long peakEndTime = getTimestamp(19, 00);
-
+            } else if (!DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) &&
+                    nonOverlap) {
+                long peakEndTime = getTimestamp(DaytimePeakPeriod.peakEndTime, 00);
                 peakDuration = (int) (((peakEndTime - call.startTime().getTime()) / 1000));
                 offPeakDuration = call.durationSeconds() - peakDuration;
-
-            } else if (nonOverlap && DaytimePeakPeriod.offPeak(call.startTime()) && !DaytimePeakPeriod.offPeak(call.endTime())) {
-                long peakStartTime = getTimestamp(7, 00);
-
+            } else if (DaytimePeakPeriod.offPeak(call.startTime()) && !DaytimePeakPeriod.offPeak(call.endTime()) &&
+                    nonOverlap) {
+                long peakStartTime = getTimestamp(DaytimePeakPeriod.peakStartTime, 00);
                 peakDuration = (int) (((call.endTime().getTime() - peakStartTime) / 1000));
                 offPeakDuration = call.durationSeconds() - peakDuration;
             } else {
