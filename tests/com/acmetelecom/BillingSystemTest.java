@@ -5,6 +5,7 @@ import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.customer.Customer;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
@@ -47,7 +48,13 @@ public class BillingSystemTest {
         return new Call(start, end);
     }
 
-    private List<Bill> testCalls(List<Call> calls) throws NoSuchFieldException {
+    private Call makeCall(String caller, String callee, int startHour, int startMinute, int endHour, int endMinute) {
+        CallStart start = new CallStart(caller, callee, getTimestamp(startHour, startMinute));
+        CallEnd end = new CallEnd(caller, callee, getTimestamp(endHour, endMinute));
+        return new Call(start, end);
+    }
+
+    private List<Bill> testCalls(List<Call> calls, boolean nonOverlap) throws NoSuchFieldException {
         // Key of the hash map is the phone number
         HashMap<String, BigDecimal> expectedCost = new HashMap<String, BigDecimal>();
         MockCustomerDatabase customerDatabase = MockCustomerDatabase.getInstance();
@@ -62,15 +69,37 @@ public class BillingSystemTest {
             }
 
             BigDecimal newCost;
+            int peakDuration, offPeakDuration;
+            BigDecimal peakCost, offPeakCost;
 
-            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
+            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
                 // Off-peak charges
-                newCost = expectedCost.get(caller).add(
-                        new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate()));
+                peakDuration = 0;
+                offPeakDuration = call.durationSeconds();
+
+            } else if (nonOverlap && DaytimePeakPeriod.offPeak(call.startTime()) &&
+                    DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() >= 12 * 60 * 60) {
+                peakDuration = (int) (((getTimestamp(19, 00) - getTimestamp(7, 00)) / 1000));
+                offPeakDuration = call.durationSeconds() - peakDuration;
+            } else if (nonOverlap && !DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
+                long peakEndTime = getTimestamp(19, 00);
+
+                peakDuration = (int) (((peakEndTime - call.startTime().getTime()) / 1000));
+                offPeakDuration = call.durationSeconds() - peakDuration;
+
+            } else if (nonOverlap && DaytimePeakPeriod.offPeak(call.startTime()) && !DaytimePeakPeriod.offPeak(call.endTime())) {
+                long peakStartTime = getTimestamp(7, 00);
+
+                peakDuration = (int) (((call.endTime().getTime() - peakStartTime) / 1000));
+                offPeakDuration = call.durationSeconds() - peakDuration;
             } else {
-                newCost = expectedCost.get(caller).add(
-                        new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate()));
+                peakDuration = call.durationSeconds();
+                offPeakDuration = 0;
             }
+
+            peakCost = new BigDecimal(peakDuration).multiply(tariff.peakRate());
+            offPeakCost = new BigDecimal(offPeakDuration).multiply(tariff.offPeakRate());
+            newCost = expectedCost.get(caller).add(peakCost.add(offPeakCost));
 
             newCost = newCost.setScale(0, RoundingMode.HALF_UP);
             expectedCost.put(caller, newCost);
@@ -93,8 +122,6 @@ public class BillingSystemTest {
         return bills;
     }
 
-
-
     @Test
     public void testOffPeakCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
@@ -103,7 +130,7 @@ public class BillingSystemTest {
         calls.add(makeCall("2", "1", 20, 10, 5));
         calls.add(makeCall("3", "2", 20, 20, 5));
 
-        testCalls(calls);
+        testCalls(calls, false);
     }
 
     @Test
@@ -114,7 +141,7 @@ public class BillingSystemTest {
         calls.add(makeCall("2", "1", 16, 10, 5));
         calls.add(makeCall("3", "2", 16, 20, 5));
 
-        testCalls(calls);
+        testCalls(calls, false);
     }
 
     @Test
@@ -125,7 +152,7 @@ public class BillingSystemTest {
         calls.add(makeCall("2", "1", 19, 58, 5));
         calls.add(makeCall("3", "2", 6, 58, 5));
 
-        testCalls(calls);
+        testCalls(calls, false);
 
     }
 
@@ -138,7 +165,7 @@ public class BillingSystemTest {
         calls.add(makeCall("2", "1", 18, 59, 5));
         calls.add(makeCall("2", "1", 19, 10, 5));
 
-        List<Bill> bills = testCalls(calls);
+        List<Bill> bills = testCalls(calls, false);
 
         for (Bill bill : bills) {
             if (bill.getCustomer().getPricePlan().equals("Business")) {
@@ -158,5 +185,19 @@ public class BillingSystemTest {
             }
         }
 
+    }
+
+    @Test
+    public void testNonOverlapCalls() throws NoSuchFieldException {
+        ArrayList<Call> calls = new ArrayList<Call>();
+
+        calls.add(makeCall("1", "2", 6, 00, 20, 00));
+        calls.add(makeCall("2", "1", 18, 58, 5));
+        calls.add(makeCall("3", "2", 6, 58, 5));
+        calls.add(makeCall("2", "3", 8, 00, 11, 00));
+        calls.add(makeCall("1", "3", 6, 00, 10));
+        calls.add(makeCall("3", "1", 20, 00, 22, 00));
+
+        testCalls(calls, true);
     }
 }
