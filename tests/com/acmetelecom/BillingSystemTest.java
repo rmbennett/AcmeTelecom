@@ -35,19 +35,6 @@ public class BillingSystemTest {
 
     }
 
-    private Call makeCall(String caller, String callee, int hour, int minute, int duration) {
-        CallStart start = new CallStart(caller, callee, getTimestamp(hour, minute));
-
-        minute += duration;
-        if (minute >= 60) {
-            minute %= 60;
-            hour++;
-        }
-
-        CallEnd end = new CallEnd(caller, callee, getTimestamp(hour, minute));
-        return new Call(start, end);
-    }
-
     private Call makeCall(String caller, String callee, int startHour, int startMinute, int endHour, int endMinute) {
         CallStart start = new CallStart(caller, callee, getTimestamp(startHour, startMinute));
         CallEnd end = new CallEnd(caller, callee, getTimestamp(endHour, endMinute));
@@ -126,9 +113,9 @@ public class BillingSystemTest {
     public void testOffPeakCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
-        calls.add(makeCall("1", "2", 20, 0, 5));
-        calls.add(makeCall("2", "1", 20, 10, 5));
-        calls.add(makeCall("3", "2", 20, 20, 5));
+        calls.add(makeCall("1", "2", 20, 00, 20, 05));
+        calls.add(makeCall("2", "1", 20, 10, 10, 15));
+        calls.add(makeCall("3", "2", 20, 20, 10, 25));
 
         testCalls(calls, false);
     }
@@ -137,9 +124,9 @@ public class BillingSystemTest {
     public void testPeakCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
-        calls.add(makeCall("1", "2", 16, 0, 5));
-        calls.add(makeCall("2", "1", 16, 10, 5));
-        calls.add(makeCall("3", "2", 16, 20, 5));
+        calls.add(makeCall("1", "2", 16, 00, 16, 5));
+        calls.add(makeCall("2", "1", 16, 10, 16, 15));
+        calls.add(makeCall("3", "2", 16, 20, 16, 25));
 
         testCalls(calls, false);
     }
@@ -148,9 +135,9 @@ public class BillingSystemTest {
     public void testOverlapCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
-        calls.add(makeCall("1", "2", 19, 58, 5));
-        calls.add(makeCall("2", "1", 19, 58, 5));
-        calls.add(makeCall("3", "2", 6, 58, 5));
+        calls.add(makeCall("1", "2", 19, 58, 20, 03));
+        calls.add(makeCall("2", "1", 19, 58, 20, 03));
+        calls.add(makeCall("3", "2", 6, 58, 7, 03));
 
         testCalls(calls, false);
 
@@ -161,9 +148,9 @@ public class BillingSystemTest {
 
         ArrayList<Call> calls = new ArrayList<Call>();
 
-        calls.add(makeCall("2", "3", 18, 35, 5));
-        calls.add(makeCall("2", "1", 18, 59, 5));
-        calls.add(makeCall("2", "1", 19, 10, 5));
+        calls.add(makeCall("2", "3", 18, 35, 18, 40));
+        calls.add(makeCall("2", "1", 18, 59, 19, 04));
+        calls.add(makeCall("2", "1", 19, 10, 19, 15));
 
         List<Bill> bills = testCalls(calls, false);
 
@@ -192,10 +179,10 @@ public class BillingSystemTest {
         ArrayList<Call> calls = new ArrayList<Call>();
 
         calls.add(makeCall("1", "2", 6, 00, 20, 00));
-        calls.add(makeCall("2", "1", 18, 58, 5));
-        calls.add(makeCall("3", "2", 6, 58, 5));
+        calls.add(makeCall("2", "1", 18, 58, 19, 03));
+        calls.add(makeCall("3", "2", 6, 58, 7, 03));
         calls.add(makeCall("2", "3", 8, 00, 11, 00));
-        calls.add(makeCall("1", "3", 6, 00, 10));
+        calls.add(makeCall("1", "3", 6, 00, 6, 10));
         calls.add(makeCall("3", "1", 20, 00, 22, 00));
 
         testCalls(calls, true);
