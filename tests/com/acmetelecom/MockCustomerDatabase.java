@@ -13,21 +13,11 @@ import java.util.List;
 public class MockCustomerDatabase implements CustomerDatabase {
 
     private static MockCustomerDatabase instance = new MockCustomerDatabase();
+    private  List<Customer> customers = new ArrayList<Customer>();
 
 
     // Private constructor for singleton paradigm
     private MockCustomerDatabase() {
-
-    }
-
-    public static MockCustomerDatabase getInstance(){
-        return instance;
-    }
-
-    @Override
-    public List<Customer> getCustomers() {
-        List<Customer> list = new ArrayList<Customer>();
-
         MockCustomers standard = MockCustomers.Standard;
         MockCustomers business = MockCustomers.Business;
         MockCustomers leisure = MockCustomers.Leisure;
@@ -36,29 +26,29 @@ public class MockCustomerDatabase implements CustomerDatabase {
         Customer customerBusiness = new Customer(business.getFullName(), business.getPhoneNumber(), business.getPricePlan());
         Customer customerLeisure = new Customer(leisure.getFullName(), leisure.getPhoneNumber(), leisure.getPricePlan());
 
-        list.add(customerStandard);
-        list.add(customerBusiness);
-        list.add(customerLeisure);
-
-        return list;
+        customers.add(customerStandard);
+        customers.add(customerBusiness);
+        customers.add(customerLeisure);
     }
 
-    // Static helper methods
-    public static boolean isType(Customer customer, MockCustomers type) {
-        return customer.getPhoneNumber() == type.getPhoneNumber() && customer.getFullName() == type.getPhoneNumber() &&
-                customer.getPricePlan() == type.getPricePlan();
+    public static MockCustomerDatabase getInstance(){
+        return instance;
     }
 
-    public static boolean isStandard(Customer customer) {
-        return isType(customer, MockCustomers.Standard);
+    @Override
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    public static boolean isBusiness(Customer customer) {
-        return isType(customer, MockCustomers.Business);
-    }
+    // Convenience method for test
+    public Customer getCustomer(String phoneNumber) {
+        for (Customer customer : customers) {
+            if (customer.getPhoneNumber().equals(phoneNumber)) {
+                return customer;
+            }
+        }
 
-    public static boolean isLeisure(Customer customer) {
-        return isType(customer, MockCustomers.Leisure);
+        return null;
     }
 
     public static enum MockCustomers {
