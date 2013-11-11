@@ -47,7 +47,7 @@ public class BillingSystemTest {
         return new Call(start, end);
     }
 
-    private List<Bill> testCalls(List<Call> calls) {
+    private List<Bill> testCalls(List<Call> calls) throws NoSuchFieldException {
         // Key of the hash map is the phone number
         HashMap<String, BigDecimal> expectedCost = new HashMap<String, BigDecimal>();
         MockCustomerDatabase customerDatabase = MockCustomerDatabase.getInstance();
@@ -96,7 +96,7 @@ public class BillingSystemTest {
 
 
     @Test
-    public void testOffPeakCalls() {
+    public void testOffPeakCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
         calls.add(makeCall("1", "2", 20, 0, 5));
@@ -107,7 +107,7 @@ public class BillingSystemTest {
     }
 
     @Test
-    public void testPeakCalls() {
+    public void testPeakCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
         calls.add(makeCall("1", "2", 16, 0, 5));
@@ -118,7 +118,7 @@ public class BillingSystemTest {
     }
 
     @Test
-    public void testOverlapCalls() {
+    public void testOverlapCalls() throws NoSuchFieldException {
         ArrayList<Call> calls = new ArrayList<Call>();
 
         calls.add(makeCall("1", "2", 19, 58, 5));
@@ -130,7 +130,7 @@ public class BillingSystemTest {
     }
 
     @Test
-    public void testLineItems() {
+    public void testLineItems() throws NoSuchFieldException {
 
         ArrayList<Call> calls = new ArrayList<Call>();
 
