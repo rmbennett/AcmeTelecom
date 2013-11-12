@@ -2,54 +2,119 @@ package com.acmetelecom;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 class DaytimePeakPeriod {
-    private List<PeakTime> peakTimeList;
+    private List<PeakPeriod> peakPeriodList;
 
-    public void addPeakTime(PeakTime peakTime)
+    public void addPeakTime(PeakPeriod peakTime)
     {
         //Add logic to order list and make sure peak times do not overlap
-        peakTimeList.add(peakTime);
+        peakPeriodList.add(peakTime);
 
     }
 
     public void remotePeakTime(int pos)
     {
-        peakTimeList.remove(pos);
+        peakPeriodList.remove(pos);
     }
 
-    private DaytimePeakPeriod() {
+    public DaytimePeakPeriod() {
 
     }
 
-    public int getTimeInSecondsInCallDuringPeak(int callStart, int callEnd)
+    public int getTimeInSecondsInCallDuringPeak(Call call)
     {
 
-        int startPeakTime, endPeakTime;
-        for (int i = 0; i < peakTimeList.size(); i++) {
+        call.durationSeconds();
+        int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (12 * 60 * 60));
+        int remainder = call.durationSeconds() % (24 * 60 * 60);
+        peakPeriodList = new ArrayList<PeakPeriod>();
+        peakPeriodList.add(new PeakPeriod(23,24));
+
+        int
+                startPeakIndex = 0,
+                endPeakIndex = 0;
+
+        //Date.getHours is deprecated from java.date package. New accepted method is to use the Calender package :\
+        //Find the start time for the last day
+        Calendar calStart = Calendar.getInstance();
+        calStart.setTime(new Date(call.startTime().getTime() + (fullBillingsDays * 12 * 60 * 60)));
+        int startTime = calStart.get(Calendar.HOUR_OF_DAY);
+        boolean startOutOfPeakTime = true;
+
+        //Find the first peak time the call could hit
+        for (int i = 0; i < peakPeriodList.size(); i++) {
 
             //Starts between this peakTime
-            if (callStart > peakTimeList.get(i).getStartHour() && callStart <  peakTimeList.get(i).getEndHour())
-                startPeakTime = i;
-
+            if (startTime >= peakPeriodList.get(i).getStartHour() &&
+                    startTime <  peakPeriodList.get(i).getEndHour())
+            {
+                startPeakIndex= i;
+                startOutOfPeakTime = false;
+                break;
+            }
             //Starts between this peakTime and the next (out of peak)
-            if (callStart > peakTimeList.get(i).getEndHour() && callStart < peakTimeList.get((i+1)%peakTimeList.size()).getStartHour())
-                startPeakTime = (i+1)%peakTimeList.size();
+            if (startTime >= peakPeriodList.get(i).getEndHour() &&
+                    startTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())
+            {
+                startPeakIndex = (i+1)% peakPeriodList.size();
+                break;
+            }
+        }
 
+        //The end time
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.setTime(call.endTime());
+        int endTime = calEnd.get(Calendar.HOUR_OF_DAY);
+        boolean endOutOfPeakTime = true;
 
+        for (int i = 0; i < peakPeriodList.size(); i++) {
             //Ends in this peakTime
-            if (callEnd > peakTimeList.get(i).getStartHour() &&
-                    callEnd <  peakTimeList.get(i).getEndHour())
-                endPeakTime = i;
-
-
+            if (endTime >= peakPeriodList.get(i).getStartHour() &&
+                    endTime <  peakPeriodList.get(i).getEndHour())
+            {
+                endPeakIndex = i;
+                endOutOfPeakTime = false;
+                break;
+            }
             //Ends between this peakTime and the next (out of peak)
-            if (callEnd > peakTimeList.get(i).getEndHour() && callEnd < peakTimeList.get((i+1)%peakTimeList.size()).getStartHour())
-                endPeakTime = (i+1)%peakTimeList.size();
+            if (endTime >= peakPeriodList.get(i).getEndHour() &&
+                    endTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())
+            {
+                endPeakIndex = (i+1)% peakPeriodList.size();
+                break;
+            }
 
         }
+
+        int fullPeakTimePerDay = 0;
+        for (int i = 0; i < peakPeriodList.size(); i++)
+            fullPeakTimePerDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour() * 3600000);
+
+        //Call was completely outside peak period (between 2 peak periods)
+        if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)
+            return (fullBillingsDays * fullPeakTimePerDay)/1000;
+
+        int peakPeriodForLastDay = 0;
+        int i = startPeakIndex;
+        do
+        {
+            peakPeriodForLastDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour())* 3600000;
+            i++;
+        } while(i < endPeakIndex);
+
+
+        if (!startOutOfPeakTime)
+            peakPeriodForLastDay -= (calStart.get(Calendar.HOUR_OF_DAY) * 3600000 + calStart.get(Calendar.MINUTE) * 60000 + calStart.get(Calendar.SECOND) * 1000 - peakPeriodList.get(startPeakIndex).getStartHour() * 3600000);
+
+        if (!endOutOfPeakTime)
+            peakPeriodForLastDay -= (peakPeriodList.get(endPeakIndex).getEndHour()*3600000 - (calEnd.get(Calendar.HOUR_OF_DAY)*3600000 + calEnd.get(Calendar.MINUTE) * 60000 + calEnd.get(Calendar.SECOND) * 1000));
+
+
+        //So now we should have the startPeakTime and endPeakTime, which tells us what
+        return (fullBillingsDays * fullPeakTimePerDay + peakPeriodForLastDay)/1000;
     }
 
     public static boolean offPeak(Date time) {

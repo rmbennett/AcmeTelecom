@@ -5,9 +5,8 @@ package com.acmetelecom;
  * User: Thomas
  * Date: 11/11/13
  * Time: 23:55
- * To change this template use File | Settings | File Templates.
  */
-public class PeakTime {
+public class PeakPeriod {
     private int startHour;
     private int endHour;
 
@@ -31,7 +30,7 @@ public class PeakTime {
         this.endHour = endHour;
     }
 
-    PeakTime(int startHour, int endHour)
+    PeakPeriod(int startHour, int endHour)
     {
         setStartHour(startHour);
         setEndHour(endHour);
