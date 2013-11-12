@@ -18,10 +18,10 @@ public class Runner {
         sleepSeconds(20);
         billingSystem.callCompleted("447722113434", "447766511332");
         billingSystem.callInitiated("447722113434", "447711111111");
-        sleepSeconds(30);
+        sleepSeconds(1);
         billingSystem.callCompleted("447722113434", "447711111111");
         billingSystem.callInitiated("447777765432", "447711111111");
-        sleepSeconds(60);
+        sleepSeconds(6);
         billingSystem.callCompleted("447777765432", "447711111111");
         List<Bill> bills = billingSystem.createCustomerBills();
 
