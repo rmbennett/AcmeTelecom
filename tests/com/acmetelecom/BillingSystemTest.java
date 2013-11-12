@@ -1,20 +1,19 @@
 package com.acmetelecom;
 
 import com.acmetelecom.customer.CentralTariffDatabase;
-import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.customer.Tariff;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class BillingSystemTest {
     BillingSystem billingSystem;
@@ -24,6 +23,7 @@ public class BillingSystemTest {
         billingSystem = new BillingSystem(MockCustomerDatabase.getInstance(), CentralTariffDatabase.getInstance());
     }
 
+    @SuppressWarnings("deprecation")
     private long getTimestamp(int hour, int minute) {
         Date date = new Date();
         date.setDate(1);
