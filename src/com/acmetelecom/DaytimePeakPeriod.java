@@ -28,7 +28,7 @@ class DaytimePeakPeriod {
     {
 
         call.durationSeconds();
-        int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (12 * 60 * 60));
+        int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
         int remainder = call.durationSeconds() % (24 * 60 * 60);
         peakPeriodList = new ArrayList<PeakPeriod>();
         peakPeriodList.add(new PeakPeriod(23,24));
@@ -91,7 +91,7 @@ class DaytimePeakPeriod {
 
         int fullPeakTimePerDay = 0;
         for (int i = 0; i < peakPeriodList.size(); i++)
-            fullPeakTimePerDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour() * 3600000);
+            fullPeakTimePerDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour()) * 3600000;
 
         //Call was completely outside peak period (between 2 peak periods)
         if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)

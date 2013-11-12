@@ -80,25 +80,12 @@ public class BillingSystem {
         for (Call call : calls) {
 
             Tariff tariff = tariffDatabase.tarriffFor(customer);
-
             BigDecimal cost;
 
             //New changes in regulations means customer can only be charged for period they are in the peak period
-            int totalCallTime = call.durationSeconds();
-            int fullBillingsDays = (int) Math.floor(totalCallTime / (24 * 60 * 60));
-            //First check if new system runs for longer than 24 hours. If it does, bill for full 24 hour amount
-            int remainder = totalCallTime % (24 * 60 * 60);
-            //Return remainder of time - this is the tricky part to bill
-            DaytimePeakPeriod d = new DaytimePeakPeriod();
-            int peakCallTime = d.getTimeInSecondsInCallDuringPeak(call);
+            int peakCallTime = new DaytimePeakPeriod().getTimeInSecondsInCallDuringPeak(call);
 
-            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
-                cost = new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate());
-            } else {
-                //Check if this call was
-                cost = new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate());
-            }
-
+            cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate()).add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
             cost = cost.setScale(0, RoundingMode.HALF_UP);
             BigDecimal callCost = cost;
             totalBill = totalBill.add(callCost);
