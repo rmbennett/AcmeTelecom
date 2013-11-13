@@ -62,7 +62,7 @@ public class BillingSystemTest {
         offPeakExpectedCost.put("2", new BigDecimal(0));
         offPeakExpectedCost.put("3", new BigDecimal(0));
 
-        // Peal test data
+        // Peak test data
         ArrayList<Call> peakCalls = new ArrayList<Call>();
 
         peakCalls.add(makeCall("1", "2", 16, 00, 16, 5));
@@ -74,9 +74,28 @@ public class BillingSystemTest {
         peakExpectedCost.put("2", new BigDecimal(90));
         peakExpectedCost.put("3", new BigDecimal(240));
 
+        // Hybrid test data
+        ArrayList<Call> hybridCalls = new ArrayList<Call>();
+
+        hybridCalls.add(makeCall("1", "2", 6, 00, 20, 00));
+        hybridCalls.add(makeCall("2", "1", 18, 58, 19, 03));
+        hybridCalls.add(makeCall("3", "2", 6, 58, 7, 03));
+        /*hybridCalls.add(makeCall("2", "3", 8, 00, 11, 00));
+        hybridCalls.add(makeCall("1", "3", 6, 00, 6, 10));
+        hybridCalls.add(makeCall("3", "1", 20, 00, 22, 00));*/
+
+        HashMap<String, BigDecimal> hybridExpectedCost = new HashMap<String, BigDecimal>();
+        hybridExpectedCost.put("1", new BigDecimal(23160));
+        hybridExpectedCost.put("2", new BigDecimal(90));
+        hybridExpectedCost.put("3", new BigDecimal(155));
+        /*hybridExpectedCost.put("2", new BigDecimal(3240));
+        hybridExpectedCost.put("1", new BigDecimal(120));
+        hybridExpectedCost.put("3", new BigDecimal(720));*/
+
         return Arrays.asList(new Object[][] {
                 { "Off-peak", offPeakCalls, offPeakExpectedCost },
-                { "Peak", peakCalls, peakExpectedCost }
+                { "Peak", peakCalls, peakExpectedCost },
+                { "Hybrid", hybridCalls, hybridExpectedCost }
         });
     }
 
@@ -150,17 +169,4 @@ public class BillingSystemTest {
 //
 //    }
 
-//    @Test
-//    public void testNonOverlapCalls() throws NoSuchFieldException {
-//        ArrayList<Call> calls = new ArrayList<Call>();
-//
-//        calls.add(makeCall("1", "2", 6, 00, 20, 00));
-//        calls.add(makeCall("2", "1", 18, 58, 19, 03));
-//        calls.add(makeCall("3", "2", 6, 58, 7, 03));
-//        calls.add(makeCall("2", "3", 8, 00, 11, 00));
-//        calls.add(makeCall("1", "3", 6, 00, 6, 10));
-//        calls.add(makeCall("3", "1", 20, 00, 22, 00));
-//
-//        testCalls(calls, true);
-//    }
 }
