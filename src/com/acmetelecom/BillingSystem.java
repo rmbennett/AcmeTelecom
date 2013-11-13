@@ -36,7 +36,7 @@ public class BillingSystem {
     }
 
     public void callCompleted(String caller, String callee) {
-        callCompleted(caller, callee, timeNow() /*+ 86400000*/);
+        callCompleted(caller, callee, timeNow() + 86400000);
     }
 
     public List<Bill> createCustomerBills() {
@@ -83,7 +83,13 @@ public class BillingSystem {
             BigDecimal cost;
 
             //New changes in regulations means customer can only be charged for period they are in the peak period
-            int peakCallTime = new DaytimePeakPeriod().getTimeInSecondsInCallDuringPeak(call);
+            List<PeakPeriod> peakPeriods = new ArrayList<PeakPeriod>();
+
+            peakPeriods.add(new PeakPeriod(23,24));
+            peakPeriods.add(new PeakPeriod(0,3));
+            peakPeriods.add(new PeakPeriod(4,8));
+
+            int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
 
             cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate()).add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
             cost = cost.setScale(0, RoundingMode.HALF_UP);

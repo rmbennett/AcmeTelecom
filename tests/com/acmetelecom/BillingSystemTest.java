@@ -63,14 +63,14 @@ public class BillingSystemTest {
 
             BigDecimal newCost;
 
-            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
-                // Off-peak charges
+//            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
+//                // Off-peak charges
                 newCost = expectedCost.get(caller).add(
                         new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate()));
-            } else {
-                newCost = expectedCost.get(caller).add(
-                        new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate()));
-            }
+//            } else {
+//                newCost = expectedCost.get(caller).add(
+//                        new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate()));
+//            }
 
             newCost = newCost.setScale(0, RoundingMode.HALF_UP);
             expectedCost.put(caller, newCost);

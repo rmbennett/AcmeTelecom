@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 class DaytimePeakPeriod {
+
     private List<PeakPeriod> peakPeriodList;
 
     public void addPeakTime(PeakPeriod peakTime)
     {
-        //Add logic to order list and make sure peak times do not overlap
+        //Should probably add logic to order list and make sure peak times do not overlap
         peakPeriodList.add(peakTime);
-
     }
 
     public void remotePeakTime(int pos)
@@ -21,7 +21,11 @@ class DaytimePeakPeriod {
     }
 
     public DaytimePeakPeriod() {
+        this(new ArrayList<PeakPeriod>());
+    }
 
+    public DaytimePeakPeriod(List<PeakPeriod> peakPeriods)  {
+        peakPeriodList = peakPeriods;
     }
 
     public int getTimeInSecondsInCallDuringPeak(Call call)
@@ -30,9 +34,8 @@ class DaytimePeakPeriod {
         call.durationSeconds();
         int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
         int remainder = call.durationSeconds() % (24 * 60 * 60);
-//        peakPeriodList = new ArrayList<PeakPeriod>();
-//        peakPeriodList.add(new PeakPeriod(23,24));
-//        peakPeriodList.add(new PeakPeriod(0,3));
+
+
 
         int
                 startPeakIndex = 0,
@@ -45,7 +48,7 @@ class DaytimePeakPeriod {
         int startTime = calStart.get(Calendar.HOUR_OF_DAY);
         boolean startOutOfPeakTime = true;
 
-        //Find the first peak time the call could hit
+        //Find the first peak period the call could hit and set startOutOfPeakTime to whether it will hit it or not
         for (int i = 0; i < peakPeriodList.size(); i++) {
 
             //Starts between this peakTime
@@ -65,7 +68,7 @@ class DaytimePeakPeriod {
             }
         }
 
-        //The end time
+        //Find the last peak period the call could hit and set endOutOfPeakTime to whether it will hit it or not
         Calendar calEnd = Calendar.getInstance();
         calEnd.setTime(call.endTime());
         int endTime = calEnd.get(Calendar.HOUR_OF_DAY);
@@ -118,10 +121,5 @@ class DaytimePeakPeriod {
         return (fullBillingsDays * fullPeakTimePerDay + peakPeriodForLastDay)/1000;
     }
 
-    public static boolean offPeak(Date time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        return hour < 7 || hour >= 19;
-    }
+
 }
