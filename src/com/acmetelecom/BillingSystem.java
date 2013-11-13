@@ -36,7 +36,7 @@ public class BillingSystem {
     }
 
     public void callCompleted(String caller, String callee) {
-        callCompleted(caller, callee, timeNow());
+        callCompleted(caller, callee, timeNow() /*+ 86400000*/);
     }
 
     public List<Bill> createCustomerBills() {
