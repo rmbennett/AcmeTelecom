@@ -30,7 +30,7 @@ public class PeakPeriod {
         this.endHour = endHour;
     }
 
-    PeakPeriod(int startHour, int endHour)
+    public PeakPeriod(int startHour, int endHour)
     {
         setStartHour(startHour);
         setEndHour(endHour);

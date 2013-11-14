@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 class DaytimePeakPeriod {
-
     private List<PeakPeriod> peakPeriodList;
 
     public void addPeakTime(PeakPeriod peakTime)
@@ -15,7 +14,7 @@ class DaytimePeakPeriod {
         peakPeriodList.add(peakTime);
     }
 
-    public void remotePeakTime(int pos)
+    public void removePeakTime(int pos)
     {
         peakPeriodList.remove(pos);
     }

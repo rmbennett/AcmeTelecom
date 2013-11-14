@@ -1,29 +1,28 @@
 package com.acmetelecom;
 
 import com.acmetelecom.customer.CentralTariffDatabase;
-import com.acmetelecom.customer.Tariff;
 import com.acmetelecom.customer.Customer;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import static org.junit.Assert.assertEquals;
+
+@RunWith(Parameterized.class)
 public class BillingSystemTest {
     BillingSystem billingSystem;
+    String name;
+    ArrayList<Call> calls;
+    HashMap<String, BigDecimal> expectedCost;
+    List<Bill> bills;
 
-    @Before
-    public void setUp() {
-        billingSystem = new BillingSystem(MockCustomerDatabase.getInstance(), CentralTariffDatabase.getInstance());
-    }
+    /** Helper Methods **/
 
-    private long getTimestamp(int hour, int minute) {
+    @SuppressWarnings("deprecation")
+    private static long getTimestamp(int hour, int minute) {
         Date date = new Date();
         date.setDate(1);
         date.setMonth(3);
@@ -34,129 +33,140 @@ public class BillingSystemTest {
 
     }
 
-    private Call makeCall(String caller, String callee, int hour, int minute, int duration) {
-        CallStart start = new CallStart(caller, callee, getTimestamp(hour, minute));
-
-        minute += duration;
-        if (minute >= 60) {
-            minute %= 60;
-            hour++;
-        }
-
-        CallEnd end = new CallEnd(caller, callee, getTimestamp(hour, minute));
+    private static Call makeCall(String caller, String callee, int startHour, int startMinute, int endHour, int endMinute) {
+        CallStart start = new CallStart(caller, callee, getTimestamp(startHour, startMinute));
+        CallEnd end = new CallEnd(caller, callee, getTimestamp(endHour, endMinute));
         return new Call(start, end);
     }
 
-    private List<Bill> testCalls(List<Call> calls) throws NoSuchFieldException {
-        // Key of the hash map is the phone number
-        HashMap<String, BigDecimal> expectedCost = new HashMap<String, BigDecimal>();
-        MockCustomerDatabase customerDatabase = MockCustomerDatabase.getInstance();
+    /*
+        Each set of data in the test data consists of a 3-tuple:
+            - 1: Name
+            - 2: List of calls
+            - 3: Hash map of expected cost
+
+     */
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> testData() {
+
+        // Off-peak test data
+        ArrayList<Call> offPeakCalls = new ArrayList<Call>();
+
+        offPeakCalls.add(makeCall("1", "2", 20, 00, 20, 05));
+        offPeakCalls.add(makeCall("2", "1", 20, 10, 10, 15));
+        offPeakCalls.add(makeCall("3", "2", 20, 20, 10, 25));
+
+        HashMap<String, BigDecimal> offPeakExpectedCost = new HashMap<String, BigDecimal>();
+        offPeakExpectedCost.put("1", new BigDecimal(60));
+        offPeakExpectedCost.put("2", new BigDecimal(0));
+        offPeakExpectedCost.put("3", new BigDecimal(0));
+
+        // Peak test data
+        ArrayList<Call> peakCalls = new ArrayList<Call>();
+
+        peakCalls.add(makeCall("1", "2", 16, 00, 16, 5));
+        peakCalls.add(makeCall("2", "1", 16, 10, 16, 15));
+        peakCalls.add(makeCall("3", "2", 16, 20, 16, 25));
+
+        HashMap<String, BigDecimal> peakExpectedCost = new HashMap<String, BigDecimal>();
+        peakExpectedCost.put("1", new BigDecimal(150));
+        peakExpectedCost.put("2", new BigDecimal(90));
+        peakExpectedCost.put("3", new BigDecimal(240));
+
+        // Hybrid test data
+        ArrayList<Call> hybridCalls = new ArrayList<Call>();
+
+        hybridCalls.add(makeCall("1", "2", 6, 00, 20, 00));
+        hybridCalls.add(makeCall("2", "1", 18, 58, 19, 03));
+        hybridCalls.add(makeCall("3", "2", 6, 58, 7, 03));
+        /*hybridCalls.add(makeCall("2", "3", 8, 00, 11, 00));
+        hybridCalls.add(makeCall("1", "3", 6, 00, 6, 10));
+        hybridCalls.add(makeCall("3", "1", 20, 00, 22, 00));*/
+
+        HashMap<String, BigDecimal> hybridExpectedCost = new HashMap<String, BigDecimal>();
+        hybridExpectedCost.put("1", new BigDecimal(23160));
+        hybridExpectedCost.put("2", new BigDecimal(90));
+        hybridExpectedCost.put("3", new BigDecimal(155));
+        /*hybridExpectedCost.put("2", new BigDecimal(3240));
+        hybridExpectedCost.put("1", new BigDecimal(120));
+        hybridExpectedCost.put("3", new BigDecimal(720));*/
+
+        return Arrays.asList(new Object[][] {
+                { "Off-peak", offPeakCalls, offPeakExpectedCost },
+                { "Peak", peakCalls, peakExpectedCost },
+                { "Hybrid", hybridCalls, hybridExpectedCost }
+        });
+    }
+
+    public BillingSystemTest(String name, ArrayList<Call> calls, HashMap<String, BigDecimal> expectedCost){
+        billingSystem = new BillingSystem(MockCustomerDatabase.getInstance(), CentralTariffDatabase.getInstance());
+        this.name = name;
+        this.calls = calls;
+        this.expectedCost = expectedCost;
 
         // "Make" the calls
         for (Call call : calls) {
             String caller = call.caller();
-            Customer customer = customerDatabase.getCustomer(caller);
-            Tariff tariff = Tariff.valueOf(customer.getPricePlan());
-            if (expectedCost.get(caller) == null) {
-                expectedCost.put(caller, new BigDecimal(0));
-            }
+            String callee = call.callee();
 
-            BigDecimal newCost;
-
-//            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime())) {
-//                // Off-peak charges
-                newCost = expectedCost.get(caller).add(
-                        new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate()));
-//            } else {
-//                newCost = expectedCost.get(caller).add(
-//                        new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate()));
-//            }
-
-            newCost = newCost.setScale(0, RoundingMode.HALF_UP);
-            expectedCost.put(caller, newCost);
-
-            billingSystem.callInitiated(caller, call.callee(), call.startTime().getTime());
-            billingSystem.callCompleted(caller, call.callee(), call.endTime().getTime());
+            billingSystem.callInitiated(caller, callee, call.startTime().getTime());
+            billingSystem.callCompleted(caller, callee, call.endTime().getTime());
         }
 
-        // Assert that bill costs matches what we expect
-        List<Bill> bills = billingSystem.createCustomerBills();
+        // Get bills
+        bills = billingSystem.createCustomerBills();
+    }
+
+    @Test
+    public void testCalls() throws NoSuchFieldException {
         for (Bill bill : bills) {
             Customer customer = bill.getCustomer();
             BigDecimal expected = expectedCost.get(customer.getPhoneNumber());
-            if (expected == null) {
-                expected = new BigDecimal(0);
-            }
-            assertEquals(expected, bill.getTotalBill());
+            assertEquals(String.format("[%s] Customer %s cost", name, customer.getPhoneNumber()),
+                    expected, bill.getTotalBill());
         }
-
-        return bills;
     }
 
-
-
-    @Test
-    public void testOffPeakCalls() throws NoSuchFieldException {
-        ArrayList<Call> calls = new ArrayList<Call>();
-
-        calls.add(makeCall("1", "2", 20, 0, 5));
-        calls.add(makeCall("2", "1", 20, 10, 5));
-        calls.add(makeCall("3", "2", 20, 20, 5));
-
-        testCalls(calls);
-    }
-
-    @Test
-    public void testPeakCalls() throws NoSuchFieldException {
-        ArrayList<Call> calls = new ArrayList<Call>();
-
-        calls.add(makeCall("1", "2", 16, 0, 5));
-        calls.add(makeCall("2", "1", 16, 10, 5));
-        calls.add(makeCall("3", "2", 16, 20, 5));
-
-        testCalls(calls);
-    }
-
-    @Test
-    public void testOverlapCalls() throws NoSuchFieldException {
-        ArrayList<Call> calls = new ArrayList<Call>();
-
-        calls.add(makeCall("1", "2", 19, 58, 5));
-        calls.add(makeCall("2", "1", 19, 58, 5));
-        calls.add(makeCall("3", "2", 6, 58, 5));
-
-        testCalls(calls);
-
-    }
 
     @Test
     public void testLineItems() throws NoSuchFieldException {
-
-        ArrayList<Call> calls = new ArrayList<Call>();
-
-        calls.add(makeCall("2", "3", 18, 35, 5));
-        calls.add(makeCall("2", "1", 18, 59, 5));
-        calls.add(makeCall("2", "1", 19, 10, 5));
-
-        List<Bill> bills = testCalls(calls);
-
         for (Bill bill : bills) {
-            if (bill.getCustomer().getPricePlan().equals("Business")) {
-                List<BillingSystem.LineItem> items = bill.getCalls();
-                assertEquals(calls.size(), items.size());
-
-                for (int i = 0; i < calls.size(); i++) {
-                    Call call = calls.get(i);
-                    BillingSystem.LineItem item = items.get(i);
-
-                    assertEquals(item.callee(), call.callee());
-                    assertEquals(item.caller(), call.caller());
-                    assertEquals("5:00", item.durationMinutes());
-
+            String phoneNumber = bill.getCustomer().getPhoneNumber();
+            // Extract list of expected calls
+            ArrayList<Call> expectedCalls = new ArrayList<Call>();
+            for (Call call : calls) {
+                if (call.caller().equals(phoneNumber)) {
+                    expectedCalls.add(call);
                 }
-                break;
+            }
+
+            List<BillingSystem.LineItem> actualCalls = bill.getCalls();
+
+            assertEquals(String.format("[%s] Customer %s number of calls", name, phoneNumber),
+                    expectedCalls.size(), actualCalls.size());
+
+            for (int i = 0; i < expectedCalls.size(); i++) {
+                Call expected = expectedCalls.get(i);
+                BillingSystem.LineItem actual = actualCalls.get(i);
+
+                assertEquals(expected.callee(), actual.callee());
+                assertEquals(expected.caller(), actual.caller());
             }
         }
 
     }
+
+//    @Test
+//    public void testOverlapCalls() throws NoSuchFieldException {
+//        ArrayList<Call> calls = new ArrayList<Call>();
+//
+//        calls.add(makeCall("1", "2", 19, 58, 20, 03));
+//        calls.add(makeCall("2", "1", 19, 58, 20, 03));
+//        calls.add(makeCall("3", "2", 6, 58, 7, 03));
+//
+//        testCalls(calls, false);
+//
+//    }
+
 }

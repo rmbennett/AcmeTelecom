@@ -22,4 +22,9 @@ public class DaytimePeakPeriodTest {
         time.setHours(15);
         //assertFalse("Hour 15 is peak", DaytimePeakPeriod.offPeak(time));
     }
+
+    @Test
+    public void testValidPeakRange() {
+        assertTrue("Invalid peak period range", DaytimePeakPeriod.peakStartTime < DaytimePeakPeriod.peakEndTime);
+    }
 }
