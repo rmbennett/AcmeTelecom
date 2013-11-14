@@ -34,6 +34,13 @@ class DaytimePeakPeriod {
             startPeakIndex = 0,
             endPeakIndex = -1;
 
+        int fullPeakTimePerDay = 0;
+        for (int i = 0; i < peakPeriodList.size(); i++)
+            fullPeakTimePerDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour()) * 3600000;
+
+        if (call.durationSeconds() % (24 * 60 * 60) == 0)
+            return (fullPeakTimePerDay * fullBillingsDays) / 1000;
+
         //Date.getHours is deprecated from java.date package. New accepted method is to use the Calender package :\
         //Find the start time for the last day
         Calendar calStart = Calendar.getInstance();
@@ -85,10 +92,6 @@ class DaytimePeakPeriod {
             }
 
         }
-
-        int fullPeakTimePerDay = 0;
-        for (int i = 0; i < peakPeriodList.size(); i++)
-            fullPeakTimePerDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour()) * 3600000;
 
         //Call was completely outside peak period (between 2 peak periods)
         if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)

@@ -86,7 +86,7 @@ public class BillingSystem {
             Tariff tariff = tariffDatabase.tarriffFor(customer);
             BigDecimal cost;
 
-            //New changes in regulations means customer can only be charged for period they are in the peak period
+            //New changes in regulations means customer can only be charged for peak tariff price for the period they are in the peak period
 
             int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
 
