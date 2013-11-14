@@ -11,10 +11,17 @@ public class BillingSystem {
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
     private CustomerDatabase customerDatabase;
     private TariffLibrary tariffDatabase;
-
+    private List<PeakPeriod> peakPeriods;
     public BillingSystem(CustomerDatabase customerDatabase, TariffLibrary tariffDatabase) {
         this.customerDatabase = customerDatabase;
         this.tariffDatabase = tariffDatabase;
+
+        peakPeriods = new ArrayList<PeakPeriod>();
+        //Dummy population
+        peakPeriods.add(new PeakPeriod(23,24));
+        peakPeriods.add(new PeakPeriod(0,3));
+        peakPeriods.add(new PeakPeriod(4,8));
+
     }
 
     public BillingSystem() {
@@ -80,15 +87,13 @@ public class BillingSystem {
         for (Call call : calls) {
 
             Tariff tariff = tariffDatabase.tarriffFor(customer);
-
             BigDecimal cost;
 
-            if (DaytimePeakPeriod.offPeak(call.startTime()) && DaytimePeakPeriod.offPeak(call.endTime()) && call.durationSeconds() < 12 * 60 * 60) {
-                cost = new BigDecimal(call.durationSeconds()).multiply(tariff.offPeakRate());
-            } else {
-                cost = new BigDecimal(call.durationSeconds()).multiply(tariff.peakRate());
-            }
+            //New changes in regulations means customer can only be charged for period they are in the peak period
 
+            int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
+
+            cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate()).add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
             cost = cost.setScale(0, RoundingMode.HALF_UP);
             BigDecimal callCost = cost;
             totalBill = totalBill.add(callCost);
