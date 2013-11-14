@@ -86,15 +86,15 @@ public class BillingSystem {
             Tariff tariff = tariffDatabase.tarriffFor(customer);
             BigDecimal cost;
 
-            //New changes in regulations means customer can only be charged for peak tariff price for the period they are in the peak period
-
+            // New changes in regulations means customer can only be charged for peak tariff price for the period they are in the peak period
             int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
 
-            cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate()).add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
+            cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate());
+            cost = cost.add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
             cost = cost.setScale(0, RoundingMode.HALF_UP);
             BigDecimal callCost = cost;
             totalBill = totalBill.add(callCost);
-            items.add(new LineItem(call, callCost));
+            items.add(new LineItem(call, callCost, peakCallTime));
         }
 
         return new Bill(customer, items, totalBill);
@@ -104,9 +104,12 @@ public class BillingSystem {
         private Call call;
         private BigDecimal callCost;
 
-        public LineItem(Call call, BigDecimal callCost) {
+        private int peakCallTime;
+
+        public LineItem(Call call, BigDecimal callCost, int peakCallTime) {
             this.call = call;
             this.callCost = callCost;
+            this.peakCallTime = peakCallTime;
         }
 
         public String date() {
@@ -127,6 +130,10 @@ public class BillingSystem {
 
         public BigDecimal cost() {
             return callCost;
+        }
+
+        public int getPeakCallTime() {
+            return peakCallTime;
         }
     }
 }
