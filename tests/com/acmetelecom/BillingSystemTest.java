@@ -29,6 +29,7 @@ public class BillingSystemTest {
         date.setYear(2013);
         date.setHours(hour);
         date.setMinutes(minute);
+        date.setSeconds(0);
         return date.getTime();
 
     }
