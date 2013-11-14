@@ -33,10 +33,7 @@ class DaytimePeakPeriod {
         call.durationSeconds();
         int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
         int remainder = call.durationSeconds() % (24 * 60 * 60);
-
-
-
-        int
+            int
                 startPeakIndex = 0,
                 endPeakIndex = 0;
 

@@ -15,13 +15,13 @@ public class Runner {
         System.out.println("Running...");
         BillingSystem billingSystem = new BillingSystem();
         billingSystem.callInitiated("447722113434", "447766511332");
-        sleepSeconds(2);
+        sleepSeconds(20);
         billingSystem.callCompleted("447722113434", "447766511332");
         billingSystem.callInitiated("447722113434", "447711111111");
-        sleepSeconds(1);
+        sleepSeconds(30);
         billingSystem.callCompleted("447722113434", "447711111111");
         billingSystem.callInitiated("447777765432", "447711111111");
-        sleepSeconds(1);
+        sleepSeconds(60);
         billingSystem.callCompleted("447777765432", "447711111111");
         List<Bill> bills = billingSystem.createCustomerBills();
 

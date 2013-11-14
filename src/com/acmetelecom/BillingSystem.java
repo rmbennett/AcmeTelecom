@@ -11,10 +11,17 @@ public class BillingSystem {
     private List<CallEvent> callLog = new ArrayList<CallEvent>();
     private CustomerDatabase customerDatabase;
     private TariffLibrary tariffDatabase;
-
+    private List<PeakPeriod> peakPeriods;
     public BillingSystem(CustomerDatabase customerDatabase, TariffLibrary tariffDatabase) {
         this.customerDatabase = customerDatabase;
         this.tariffDatabase = tariffDatabase;
+
+        peakPeriods = new ArrayList<PeakPeriod>();
+        //Dummy population
+        peakPeriods.add(new PeakPeriod(23,24));
+        peakPeriods.add(new PeakPeriod(0,3));
+        peakPeriods.add(new PeakPeriod(4,8));
+
     }
 
     public BillingSystem() {
@@ -36,7 +43,7 @@ public class BillingSystem {
     }
 
     public void callCompleted(String caller, String callee) {
-        callCompleted(caller, callee, timeNow() + 86400000);
+        callCompleted(caller, callee, timeNow());
     }
 
     public List<Bill> createCustomerBills() {
@@ -83,11 +90,6 @@ public class BillingSystem {
             BigDecimal cost;
 
             //New changes in regulations means customer can only be charged for period they are in the peak period
-            List<PeakPeriod> peakPeriods = new ArrayList<PeakPeriod>();
-
-            peakPeriods.add(new PeakPeriod(23,24));
-            peakPeriods.add(new PeakPeriod(0,3));
-            peakPeriods.add(new PeakPeriod(4,8));
 
             int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
 
