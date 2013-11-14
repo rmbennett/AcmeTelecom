@@ -29,13 +29,11 @@ class DaytimePeakPeriod {
 
     public int getTimeInSecondsInCallDuringPeak(Call call)
     {
-
-        call.durationSeconds();
         int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
         int remainder = call.durationSeconds() % (24 * 60 * 60);
             int
                 startPeakIndex = 0,
-                endPeakIndex = 0;
+                endPeakIndex = -1;
 
         //Date.getHours is deprecated from java.date package. New accepted method is to use the Calender package :\
         //Find the start time for the last day
