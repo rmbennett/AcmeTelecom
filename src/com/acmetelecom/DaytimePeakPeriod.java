@@ -30,10 +30,9 @@ class DaytimePeakPeriod {
     public int getTimeInSecondsInCallDuringPeak(Call call)
     {
         int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
-        int remainder = call.durationSeconds() % (24 * 60 * 60);
-            int
-                startPeakIndex = 0,
-                endPeakIndex = -1;
+        int
+            startPeakIndex = 0,
+            endPeakIndex = -1;
 
         //Date.getHours is deprecated from java.date package. New accepted method is to use the Calender package :\
         //Find the start time for the last day
@@ -105,10 +104,10 @@ class DaytimePeakPeriod {
 
 
         if (!startOutOfPeakTime)
-            peakPeriodForLastDay -= (calStart.get(Calendar.HOUR_OF_DAY) * 3600000 + calStart.get(Calendar.MINUTE) * 60000 + calStart.get(Calendar.SECOND) * 1000 - peakPeriodList.get(startPeakIndex).getStartHour() * 3600000);
+            peakPeriodForLastDay -= (calStart.get(Calendar.HOUR_OF_DAY) * 3600000 + calStart.get(Calendar.MINUTE) * 60000 + /*calStart.get(Calendar.SECOND)*/ 0  * 1000 - peakPeriodList.get(startPeakIndex).getStartHour() * 3600000);
 
         if (!endOutOfPeakTime)
-            peakPeriodForLastDay -= (peakPeriodList.get(endPeakIndex).getEndHour()*3600000 - (calEnd.get(Calendar.HOUR_OF_DAY)*3600000 + calEnd.get(Calendar.MINUTE) * 60000 + calEnd.get(Calendar.SECOND) * 1000));
+            peakPeriodForLastDay -= (peakPeriodList.get(endPeakIndex).getEndHour()*3600000 - (calEnd.get(Calendar.HOUR_OF_DAY)*3600000 + calEnd.get(Calendar.MINUTE) * 60000 + /*calEnd.get(Calendar.SECOND)*/ 0 * 1000));
 
 
         //So now we should have the startPeakTime and endPeakTime, which tells us what
