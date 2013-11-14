@@ -3,6 +3,7 @@ package com.acmetelecom;
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
 import com.acmetelecom.customer.Tariff;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,7 +25,8 @@ public class BillingSystemTest {
     List<Bill> bills;
 
     // Assert that the tariffs haven't changed
-    private void assertExpectedTariffs() {
+    @BeforeClass
+    public static void assertExpectedTariffs() {
         HashMap<String, BigDecimal[]> expectedTariffs = new HashMap<String, BigDecimal[]>();
         BigDecimal[] standard = {
                 new BigDecimal("0.200000000000000011102230246251565404236316680908203125"),
@@ -141,8 +143,6 @@ public class BillingSystemTest {
 
     @Test
     public void testTotalBillCost() throws NoSuchFieldException {
-        assertExpectedTariffs();
-
         for (Bill bill : bills) {
             Customer customer = bill.getCustomer();
             BigDecimal expected = expectedCost.get(customer.getPhoneNumber());
