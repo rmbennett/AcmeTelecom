@@ -2,6 +2,7 @@ package com.acmetelecom;
 
 import com.acmetelecom.customer.CentralTariffDatabase;
 import com.acmetelecom.customer.Customer;
+import com.acmetelecom.customer.Tariff;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -9,7 +10,7 @@ import org.junit.runners.Parameterized;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class BillingSystemTest {
@@ -42,12 +43,42 @@ public class BillingSystemTest {
     }
 
     /*
-        Each set of data in the test data consists of a 3-tuple:
+        Each set of data in the test data consists of a 4-tuple:
             - 1: Name
             - 2: List of calls
             - 3: Hash map of expected cost
+            - 4: List of peak periods
 
      */
+
+    // Assert that the tariffs haven't changed
+    private void assertExpectedTariffs() {
+        HashMap<String, BigDecimal[]> expectedTariffs = new HashMap<String, BigDecimal[]>();
+        BigDecimal[] standard = {
+                new BigDecimal("0.200000000000000011102230246251565404236316680908203125"),
+                new BigDecimal("0.5")
+        };
+        BigDecimal[] business = {
+                new BigDecimal("0.299999999999999988897769753748434595763683319091796875"),
+                new BigDecimal("0.299999999999999988897769753748434595763683319091796875")
+        };
+        BigDecimal[] leisure = {
+                new BigDecimal("0.1000000000000000055511151231257827021181583404541015625"),
+                new BigDecimal("0.8000000000000000444089209850062616169452667236328125")
+        };
+
+        expectedTariffs.put("Standard", standard);
+        expectedTariffs.put("Business", business);
+        expectedTariffs.put("Leisure", leisure);
+
+        for (Tariff tariff : Tariff.values()) {
+            BigDecimal[] expected = expectedTariffs.get(tariff.name());
+            if (!expected[0].equals(tariff.offPeakRate()) || !expected[1].equals(tariff.peakRate())) {
+                fail("Tariff for " + tariff.name() + " plan has changed -- tests needs update");
+            }
+        }
+
+    }
 
     @Parameterized.Parameters
     public static Collection<Object[]> testData() {
@@ -127,7 +158,8 @@ public class BillingSystemTest {
     }
 
     @Test
-    public void testCalls() throws NoSuchFieldException {
+    public void testCallsCost() throws NoSuchFieldException {
+        assertExpectedTariffs();
         for (Bill bill : bills) {
             Customer customer = bill.getCustomer();
             BigDecimal expected = expectedCost.get(customer.getPhoneNumber());
