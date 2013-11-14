@@ -12,21 +12,18 @@ public class BillingSystem {
     private CustomerDatabase customerDatabase;
     private TariffLibrary tariffDatabase;
     private List<PeakPeriod> peakPeriods;
-    public BillingSystem(CustomerDatabase customerDatabase, TariffLibrary tariffDatabase) {
+    public BillingSystem(CustomerDatabase customerDatabase, TariffLibrary tariffDatabase, List<PeakPeriod> peakPeriods) {
         this.customerDatabase = customerDatabase;
         this.tariffDatabase = tariffDatabase;
-
-        peakPeriods = new ArrayList<PeakPeriod>();
-        //Dummy population
-        peakPeriods.add(new PeakPeriod(23,24));
-        peakPeriods.add(new PeakPeriod(0,3));
-        peakPeriods.add(new PeakPeriod(4,8));
-
+        this.peakPeriods = peakPeriods;
     }
 
     public BillingSystem() {
         this(CentralCustomerDatabase.getInstance(),
-                CentralTariffDatabase.getInstance());
+                CentralTariffDatabase.getInstance(),
+                new ArrayList<PeakPeriod>());
+        // "Default" peak period
+        this.peakPeriods.add(new PeakPeriod(7, 19));
     }
 
 
