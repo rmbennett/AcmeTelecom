@@ -164,14 +164,14 @@ public class BillingSystemTest {
                 }
             }
 
-            List<BillingSystem.LineItem> actualCalls = bill.getCalls();
+            List<Bill.LineItem> actualCalls = bill.getCalls();
 
             assertEquals(String.format("[%s] Customer %s number of calls", name, phoneNumber),
                     expectedCalls.size(), actualCalls.size());
 
             for (int i = 0; i < expectedCalls.size(); i++) {
                 Call expected = expectedCalls.get(i).getKey();
-                BillingSystem.LineItem actual = actualCalls.get(i);
+                Bill.LineItem actual = actualCalls.get(i);
 
                 assertEquals(String.format("[%s] Customer %s callee", name, phoneNumber),
                         expected.callee(), actual.callee());

@@ -79,7 +79,7 @@ public class BillingSystem {
         }
 
         BigDecimal totalBill = new BigDecimal(0);
-        List<LineItem> items = new ArrayList<LineItem>();
+        List<Bill.LineItem> items = new ArrayList<Bill.LineItem>();
 
         for (Call call : calls) {
 
@@ -94,46 +94,10 @@ public class BillingSystem {
             cost = cost.setScale(0, RoundingMode.HALF_UP);
             BigDecimal callCost = cost;
             totalBill = totalBill.add(callCost);
-            items.add(new LineItem(call, callCost, peakCallTime));
+            items.add(new Bill.LineItem(call, callCost, peakCallTime));
         }
 
         return new Bill(customer, items, totalBill);
     }
 
-    static class LineItem {
-        private Call call;
-        private BigDecimal callCost;
-
-        private int peakCallTime;
-
-        public LineItem(Call call, BigDecimal callCost, int peakCallTime) {
-            this.call = call;
-            this.callCost = callCost;
-            this.peakCallTime = peakCallTime;
-        }
-
-        public String date() {
-            return call.date();
-        }
-
-        public String caller() {
-            return call.caller();
-        }
-
-        public String callee() {
-            return call.callee();
-        }
-
-        public String durationMinutes() {
-            return "" + call.durationSeconds() / 60 + ":" + String.format("%02d", call.durationSeconds() % 60);
-        }
-
-        public BigDecimal cost() {
-            return callCost;
-        }
-
-        public int getPeakCallTime() {
-            return peakCallTime;
-        }
-    }
 }
