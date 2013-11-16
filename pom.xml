@@ -20,5 +20,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+	<dependency>
+      <groupId>com.acmetelecom.external</groupId>
+      <artifactId>external</artifactId>
+      <version>0.0.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/external.jar</systemPath>
+	</dependency>
   </dependencies>
 </project>
