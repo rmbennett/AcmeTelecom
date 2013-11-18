@@ -358,6 +358,21 @@ public class BillingSystemTest {
         }
     }
 
+    @Test
+    public void testHtmlOutput() {
+        for (Bill bill : bills) {
+            String phoneNumber = bill.getCustomer().getPhoneNumber();
+            // Extract list of expected calls
+            ArrayList<Call> expectedCalls = new ArrayList<Call>();
+
+            for (Call call : calls.calls()) {
+                if (call.caller().equals(phoneNumber)) {
+                    expectedCalls.add(call);
+                }
+            }
+        }
+    }
+
     /**
      * Helper nested classes
      */

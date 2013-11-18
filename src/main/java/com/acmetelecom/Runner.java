@@ -26,7 +26,7 @@ public class Runner {
         List<Bill> bills = billingSystem.createCustomerBills();
 
         for (Bill bill : bills) {
-            bill.send();
+            System.out.println(bill.send());
         }
     }
     private static void sleepSeconds(int n) throws InterruptedException {

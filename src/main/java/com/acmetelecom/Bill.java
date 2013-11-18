@@ -28,13 +28,23 @@ public class Bill {
         return totalBill;
     }
 
-    public void send() {
-        Printer printer = HtmlPrinter.getInstance();
-        printer.printHeading(customer.getFullName(), customer.getPhoneNumber(), customer.getPricePlan());
+    public String send() {
+        return send(HtmlPrinter.getInstance());
+    }
+
+    public String send(Printer printer) {
+        StringBuilder output = new StringBuilder();
+        output.append(printer.printHeading(customer.getFullName(),
+                customer.getPhoneNumber(), customer.getPricePlan()));
         for (LineItem call : calls) {
-            printer.printItem(call.date(), call.callee(), call.durationMinutes(), MoneyFormatter.penceToPounds(call.cost()));
+            output.append(printer.printItem(call.date(), call.callee(),
+                    call.durationMinutes(),
+                    MoneyFormatter.penceToPounds(call.cost())));
         }
-        printer.printTotal(MoneyFormatter.penceToPounds(totalBill));
+        output.append(printer.printTotal(
+                MoneyFormatter.penceToPounds(totalBill)));
+
+        return output.toString();
     }
 
     static class LineItem {

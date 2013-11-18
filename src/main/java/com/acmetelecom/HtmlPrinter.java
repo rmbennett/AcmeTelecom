@@ -11,27 +11,29 @@ class HtmlPrinter implements Printer {
         return instance;
     }
 
-    public void printHeading(String name, String phoneNumber, String pricePlan) {
-        beginHtml();
-        System.out.println(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
-        beginTable();
+    public String printHeading(String name, String phoneNumber, String pricePlan) {
+        StringBuilder output = new StringBuilder(beginHtml());
+        output.append(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
+        output.append(beginTable());
+        return output.toString();
     }
 
-    private void beginTable() {
-        System.out.println("<table border=\"1\">");
-        System.out.println(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
+    private String beginTable() {
+        StringBuilder output = new StringBuilder("<table border=\"1\">");
+        output.append(tr(th("Time") + th("Number") + th("Duration") + th("Cost")));
+        return output.toString();
     }
 
-    private void endTable() {
-        System.out.println("</table>");
+    private String endTable() {
+        return "</table>";
     }
 
     private String h2(String text) {
         return "<h2>" + text + "</h2>";
     }
 
-    public void printItem(String time, String callee, String duration, String cost) {
-        System.out.println(tr(td(time) + td(callee) + td(duration) + td(cost)));
+    public String printItem(String time, String callee, String duration, String cost) {
+        return tr(td(time) + td(callee) + td(duration) + td(cost));
     }
 
     private String tr(String text) {
@@ -46,23 +48,28 @@ class HtmlPrinter implements Printer {
         return "<td>" + text + "</td>";
     }
 
-    public void printTotal(String total) {
-        endTable();
-        System.out.println(h2("Total: " + total));
-        endHtml();
+    public String printTotal(String total) {
+        StringBuilder output = new StringBuilder(endTable());
+        output.append(h2("Total: " + total));
+        output.append(endHtml());
+        return output.toString();
     }
 
-    private void beginHtml() {
-        System.out.println("<html>");
-        System.out.println("<head></head>");
-        System.out.println("<body>");
-        System.out.println("<h1>");
-        System.out.println("Acme Telecom");
-        System.out.println("</h1>");
+    private String beginHtml() {
+        StringBuilder output = new StringBuilder();
+        output.append("<html>");
+        output.append("<head></head>");
+        output.append("<body>");
+        output.append("<h1>");
+        output.append("Acme Telecom");
+        output.append("</h1>");
+        return output.toString();
     }
 
-    private void endHtml() {
-        System.out.println("</body>");
-        System.out.println("</html>");
+    private String endHtml() {
+        StringBuilder output = new StringBuilder();
+        output.append("</body>");
+        output.append("</html>");
+        return output.toString();
     }
 }
