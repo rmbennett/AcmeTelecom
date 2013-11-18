@@ -95,7 +95,7 @@ class DaytimePeakPeriod {
         //peak period index immediately following
 
         //Call was completely outside peak period (between 2 peak periods)
-        if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)
+        if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex && (endTime > startTime))
             return (fullBillingsDays * fullPeakTimePerDay)/1000;
 
         //Check if we rolled over a day
