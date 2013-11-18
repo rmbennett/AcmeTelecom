@@ -229,10 +229,10 @@ public class BillingSystemTest {
 
 
         return Arrays.asList(new Object[][] {
-            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,
-                    singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
-            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,               //Perfect
-                    singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
+//            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,
+//                    singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
+//            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,               //Perfect
+//                    singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
 //            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,           //Perfect
 //                    singlePeakMultiDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
 ////            { "singlePeakMultiDayOverlappingCalls", singlePeakMultiDayOverlappingCalls,                 //Peak good, cost wrong
@@ -241,8 +241,8 @@ public class BillingSystemTest {
 //                    multiPeakSingleDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
 //            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,                 //Perfect
 //                    multiPeakSingleDayOverlappingCallsExpectedCost, multiPeakPeriods },
-//            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,             //Perfect after setting -1 to 0 again
-//                    multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,             //Perfect after setting -1 to 0 again
+                    multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
 ////            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,                   //Timing
 ////                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
         });

@@ -58,11 +58,11 @@ class DaytimePeakPeriod {
                 startOutOfPeakTime = false;
                 break;
             }
-            //Starts between this peakTime and the next (out of peak)
+            //Starts after this peak time
             if (startTime >= peakPeriodList.get(i).getEndHour() /*&&
                     startTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour()*/)
             {
-                startPeakIndex = Math.max((i+1),peakPeriodList.size());
+                startPeakIndex = Math.max((i+1),0);
                 break;
             }
         }
@@ -83,7 +83,7 @@ class DaytimePeakPeriod {
                 break;
             }
 
-            //Ends after this peakTime the next (out of peak)
+            //Ends after this peakTime or the next
             if (endTime >= peakPeriodList.get(i).getEndHour()) /*&&
                     endTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())*/
             {
@@ -92,9 +92,12 @@ class DaytimePeakPeriod {
 
         }
 
+        //We now want to sum
+
+
         //Check if we rolled over a day
-/*        if (startPeakIndex > endPeakIndex)
-            endPeakIndex*/
+        if (startPeakIndex > endPeakIndex)
+            //Sum
 
         //Call was completely outside peak period (between 2 peak periods)
         if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)
