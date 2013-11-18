@@ -25,11 +25,11 @@ class HtmlPrinter implements Printer {
     }
 
     private String endTable() {
-        return "</table>";
+        return "</table>\n";
     }
 
     private String h2(String text) {
-        return "<h2>" + text + "</h2>";
+        return "<h2>" + text + "</h2>\n";
     }
 
     public String printItem(String time, String callee, String duration, String cost) {
@@ -37,15 +37,15 @@ class HtmlPrinter implements Printer {
     }
 
     private String tr(String text) {
-        return "<tr>" + text + "</tr>";
+        return "<tr>" + text + "</tr>\n";
     }
 
     private String th(String text) {
-        return "<th width=\"160\">" + text + "</th>";
+        return "<th width=\"160\">" + text + "</th>\n";
     }
 
     private String td(String text) {
-        return "<td>" + text + "</td>";
+        return "<td>" + text + "</td>\n";
     }
 
     public String printTotal(String total) {
@@ -57,19 +57,19 @@ class HtmlPrinter implements Printer {
 
     private String beginHtml() {
         StringBuilder output = new StringBuilder();
-        output.append("<html>");
-        output.append("<head></head>");
-        output.append("<body>");
-        output.append("<h1>");
-        output.append("Acme Telecom");
-        output.append("</h1>");
+        output.append("<html>\n");
+        output.append("<head></head>\n");
+        output.append("<body>\n");
+        output.append("<h1>\n");
+        output.append("Acme Telecom\n");
+        output.append("</h1>\n");
         return output.toString();
     }
 
     private String endHtml() {
         StringBuilder output = new StringBuilder();
-        output.append("</body>");
-        output.append("</html>");
+        output.append("</body>\n");
+        output.append("</html>\n");
         return output.toString();
     }
 }
