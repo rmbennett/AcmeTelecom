@@ -63,7 +63,6 @@ class DaytimePeakPeriod {
                     startTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour()*/)
             {
                 startPeakIndex = Math.max((i+1),0);
-                break;
             }
         }
 
@@ -92,29 +91,41 @@ class DaytimePeakPeriod {
 
         }
 
-        //We now want to sum
-
-
-        //Check if we rolled over a day
-        if (startPeakIndex > endPeakIndex)
-            //Sum
-
         //Call was completely outside peak period (between 2 peak periods)
         if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)
             return (fullBillingsDays * fullPeakTimePerDay)/1000;
+
+        int totalPeriodsToTranverse = 0;
+        //Check if we rolled over a day
+        if (startPeakIndex > endPeakIndex)
+            totalPeriodsToTranverse = peakPeriodList.size() - startPeakIndex + endPeakIndex;
+        else
+            totalPeriodsToTranverse = endPeakIndex - startPeakIndex;
+
+
 
 //        if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == 0 && endPeakIndex == -1)
 //            return (fullBillingsDays * fullPeakTimePerDay)/1000;
 
         int peakPeriodForLastDay = 0;
-        int i = startPeakIndex;
-        int stop = 0;
-        stop = (!endOutOfPeakTime) ?  endPeakIndex + 1 : endPeakIndex;
-        do
+
+
+
+        for ( int i = startPeakIndex; i < (startPeakIndex + ((endOutOfPeakTime) ? totalPeriodsToTranverse : totalPeriodsToTranverse + 1)); i++ )
         {
+
             peakPeriodForLastDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour())* 3600000;
-            i++;
-        } while(i < stop);
+
+        }
+
+//        int stop = 0;
+//        int i = startPeakIndex;
+//        stop = (!endOutOfPeakTime) ?  endPeakIndex + 1 : endPeakIndex;
+//        do
+//        {
+//            peakPeriodForLastDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour())* 3600000;
+//            i++;
+//        } while(i < stop);
 
 
         if (!startOutOfPeakTime)
@@ -124,7 +135,7 @@ class DaytimePeakPeriod {
             peakPeriodForLastDay -= (peakPeriodList.get(endPeakIndex).getEndHour()*3600000 - (calEnd.get(Calendar.HOUR_OF_DAY)*3600000 + calEnd.get(Calendar.MINUTE) * 60000 + calEnd.get(Calendar.SECOND) * 1000));
 
 
-        //So now we should have the startPeakTime and endPeakTime, which tells us what
+
         return (fullBillingsDays * fullPeakTimePerDay + peakPeriodForLastDay)/1000;
     }
 
