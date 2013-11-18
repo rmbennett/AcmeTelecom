@@ -27,3 +27,6 @@ local.properties
 *.iws
 .idea/
 out/
+
+# Maven
+target/
