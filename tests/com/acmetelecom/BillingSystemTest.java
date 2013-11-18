@@ -229,21 +229,21 @@ public class BillingSystemTest {
 
 
         return Arrays.asList(new Object[][] {
-            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,           //PPerfect
+            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,
                     singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
-            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,               //PPerfect
+            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,
                     singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
-            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,           //PPerfect
+            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,
                     singlePeakMultiDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
-            { "singlePeakMultiDayOverlappingCalls", singlePeakMultiDayOverlappingCalls,                 //xPeak good, cost wrong
+            { "singlePeakMultiDayOverlappingCalls", singlePeakMultiDayOverlappingCalls,
                     singlePeakMultiDayOverlappingCallsExpectedCost, singlePeakPeriods },
-            { "multiPeakSingleDayNonOverlappingCalls", multiPeakSingleDayNonOverlappingCalls,           //PPerfect
+            { "multiPeakSingleDayNonOverlappingCalls", multiPeakSingleDayNonOverlappingCalls,
                     multiPeakSingleDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
-            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,                 //PPerfect
+            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,
                     multiPeakSingleDayOverlappingCallsExpectedCost, multiPeakPeriods },
-            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,             //PPerfect after setting -1 to 0 again
+            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,
                     multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
-            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,                   //PP except cost expection (exp cost and time were wrong)
+            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,
                     multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
         });
     }
