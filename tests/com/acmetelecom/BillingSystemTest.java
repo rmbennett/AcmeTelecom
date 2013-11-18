@@ -72,7 +72,7 @@ public class BillingSystemTest {
                 .setExpectedPeakTime(0).add();
 
         singlePeakSingleDayNonOverlappingCalls.setCaller("2").setCallee("1")
-                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 3:00:00")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 15:00:00")
                 .setExpectedPeakTime(10800).add();
 
         singlePeakSingleDayNonOverlappingCalls.setCaller("3").setCallee("2")
@@ -190,7 +190,7 @@ public class BillingSystemTest {
         CallBuilder multiPeakMultiDayNonOverlappingCalls = new CallBuilder();
 
         multiPeakMultiDayNonOverlappingCalls.setCaller("1").setCallee("2")
-                .setStartDate("1-11-2013 13:00:00").setEndDate("1-11-2013 07:00:00")
+                .setStartDate("1-11-2013 13:00:00").setEndDate("1-11-2013 19:00:00")
                 .setExpectedPeakTime(0).add();
 
         multiPeakMultiDayNonOverlappingCalls.setCaller("2").setCallee("1")
