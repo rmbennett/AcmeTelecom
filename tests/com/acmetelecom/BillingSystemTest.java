@@ -140,7 +140,7 @@ public class BillingSystemTest {
                 .setExpectedPeakTime(14400).add();
 
         HashMap<String, BigDecimal> singlePeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
-        singlePeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(64872));
+        singlePeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(83520));
         singlePeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(25920));
         singlePeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(15480));
 
@@ -222,29 +222,29 @@ public class BillingSystemTest {
                 .setExpectedPeakTime(9000).add();
 
         HashMap<String, BigDecimal> multiPeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
-        multiPeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(57600));
+        multiPeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(40320));
         multiPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(25920));
         multiPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(10440));
 
 
 
         return Arrays.asList(new Object[][] {
-//            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,           //PPerfect
-//                    singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
-//            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,               //PPerfect
-//                    singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
-//            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,           //PPerfect
-//                    singlePeakMultiDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,           //PPerfect
+                    singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,               //PPerfect
+                    singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,           //PPerfect
+                    singlePeakMultiDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
             { "singlePeakMultiDayOverlappingCalls", singlePeakMultiDayOverlappingCalls,                 //xPeak good, cost wrong
                     singlePeakMultiDayOverlappingCallsExpectedCost, singlePeakPeriods },
-//            { "multiPeakSingleDayNonOverlappingCalls", multiPeakSingleDayNonOverlappingCalls,           //PPerfect
-//                    multiPeakSingleDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
-//            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,                 //PPerfect
-//                    multiPeakSingleDayOverlappingCallsExpectedCost, multiPeakPeriods },
-//            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,             //PPerfect after setting -1 to 0 again
-//                    multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
-//            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,                   //PP except cost expection (exp cost and time were wrong)
-//                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
+            { "multiPeakSingleDayNonOverlappingCalls", multiPeakSingleDayNonOverlappingCalls,           //PPerfect
+                    multiPeakSingleDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,                 //PPerfect
+                    multiPeakSingleDayOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,             //PPerfect after setting -1 to 0 again
+                    multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,                   //PP except cost expection (exp cost and time were wrong)
+                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
         });
     }
 

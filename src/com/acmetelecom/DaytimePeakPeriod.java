@@ -97,7 +97,7 @@ class DaytimePeakPeriod {
 
         int totalPeriodsToTranverse = 0;
         //Check if we rolled over a day
-        if (startPeakIndex > endPeakIndex)
+        if (startTime > endTime)
             totalPeriodsToTranverse = peakPeriodList.size() - startPeakIndex + endPeakIndex;
         else
             totalPeriodsToTranverse = endPeakIndex - startPeakIndex;
@@ -111,7 +111,7 @@ class DaytimePeakPeriod {
 
 
 
-        for ( int i = startPeakIndex; i < (startPeakIndex + ((endOutOfPeakTime) ? totalPeriodsToTranverse : totalPeriodsToTranverse + 1)); i++ )
+        for ( int i = startPeakIndex; i < (startPeakIndex + ((!endOutOfPeakTime) ? totalPeriodsToTranverse + 1: totalPeriodsToTranverse)); i++ )
         {
 
             peakPeriodForLastDay += (peakPeriodList.get(i%peakPeriodList.size()).getEndHour() - peakPeriodList.get(i%peakPeriodList.size()).getStartHour())* 3600000;
