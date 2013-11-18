@@ -11,7 +11,7 @@ class HtmlPrinter implements Printer {
         return instance;
     }
 
-    public String printHeading(String name, String phoneNumber, String pricePlan) {
+    public String heading(String name, String phoneNumber, String pricePlan) {
         StringBuilder output = new StringBuilder(beginHtml());
         output.append(h2(name + "/" + phoneNumber + " - " + "Price Plan: " + pricePlan));
         output.append(beginTable());
@@ -32,7 +32,7 @@ class HtmlPrinter implements Printer {
         return "<h2>" + text + "</h2>\n";
     }
 
-    public String printItem(String time, String callee, String duration, String cost) {
+    public String item(String time, String callee, String duration, String cost) {
         return tr(td(time) + td(callee) + td(duration) + td(cost));
     }
 
@@ -48,7 +48,7 @@ class HtmlPrinter implements Printer {
         return "<td>" + text + "</td>\n";
     }
 
-    public String printTotal(String total) {
+    public String total(String total) {
         StringBuilder output = new StringBuilder(endTable());
         output.append(h2("Total: " + total));
         output.append(endHtml());

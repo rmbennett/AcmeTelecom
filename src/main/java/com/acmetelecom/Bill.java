@@ -34,14 +34,14 @@ public class Bill {
 
     public String send(Printer printer) {
         StringBuilder output = new StringBuilder();
-        output.append(printer.printHeading(customer.getFullName(),
+        output.append(printer.heading(customer.getFullName(),
                 customer.getPhoneNumber(), customer.getPricePlan()));
         for (LineItem call : calls) {
-            output.append(printer.printItem(call.date(), call.callee(),
+            output.append(printer.item(call.date(), call.callee(),
                     call.durationMinutes(),
                     MoneyFormatter.penceToPounds(call.cost())));
         }
-        output.append(printer.printTotal(
+        output.append(printer.total(
                 MoneyFormatter.penceToPounds(totalBill)));
 
         return output.toString();
