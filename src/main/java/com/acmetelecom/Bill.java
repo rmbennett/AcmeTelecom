@@ -28,22 +28,32 @@ public class Bill {
         return totalBill;
     }
 
-    public void send() {
-        Printer printer = HtmlPrinter.getInstance();
-        printer.printHeading(customer.getFullName(), customer.getPhoneNumber(), customer.getPricePlan());
+    public String send() {
+        return send(HtmlPrinter.getInstance());
+    }
+
+    public String send(Printer printer) {
+        StringBuilder output = new StringBuilder();
+        output.append(printer.heading(customer.getFullName(),
+                customer.getPhoneNumber(), customer.getPricePlan()));
         for (LineItem call : calls) {
-            printer.printItem(call.date(), call.callee(), call.durationMinutes(), MoneyFormatter.penceToPounds(call.cost()));
+            output.append(printer.item(call.date(), call.callee(),
+                    call.durationMinutes(),
+                    MoneyFormatter.penceToPounds(call.cost())));
         }
-        printer.printTotal(MoneyFormatter.penceToPounds(totalBill));
+        output.append(printer.total(
+                MoneyFormatter.penceToPounds(totalBill)));
+
+        return output.toString();
     }
 
     static class LineItem {
         private Call call;
         private BigDecimal callCost;
 
-        private int peakCallTime;
+        private long peakCallTime;
 
-        public LineItem(Call call, BigDecimal callCost, int peakCallTime) {
+        public LineItem(Call call, BigDecimal callCost, long peakCallTime) {
             this.call = call;
             this.callCost = callCost;
             this.peakCallTime = peakCallTime;
@@ -69,7 +79,7 @@ public class Bill {
             return callCost;
         }
 
-        public int getPeakCallTime() {
+        public long getPeakCallTime() {
             return peakCallTime;
         }
     }
