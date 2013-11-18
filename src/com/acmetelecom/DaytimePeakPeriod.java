@@ -114,7 +114,7 @@ class DaytimePeakPeriod {
         for ( int i = startPeakIndex; i < (startPeakIndex + ((endOutOfPeakTime) ? totalPeriodsToTranverse : totalPeriodsToTranverse + 1)); i++ )
         {
 
-            peakPeriodForLastDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour())* 3600000;
+            peakPeriodForLastDay += (peakPeriodList.get(i%peakPeriodList.size()).getEndHour() - peakPeriodList.get(i%peakPeriodList.size()).getStartHour())* 3600000;
 
         }
 
