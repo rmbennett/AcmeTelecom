@@ -250,6 +250,26 @@ public class BillingSystemTest {
         continuousPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(12960));
         continuousPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(29160));
 
+        // peakPeriodMinuteAccuracy test data
+        CallBuilder peakPeriodMinuteAccuracyCalls = new CallBuilder();
+
+        peakPeriodMinuteAccuracyCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 06:00:00").setEndDate("1-11-2013 10:00:00")
+                .setExpectedPeakTime(14400).add();
+
+        peakPeriodMinuteAccuracyCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 10:00:00").setEndDate("1-11-2013 20:00:00")
+                .setExpectedPeakTime(0).add();
+
+        peakPeriodMinuteAccuracyCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 20:00:00").setEndDate("1-11-2013 21:00:00")
+                .setExpectedPeakTime(3600).add();
+
+        HashMap<String, BigDecimal> peakPeriodMinuteAccuracyCallsExpectedCost = new HashMap<String, BigDecimal>();
+        peakPeriodMinuteAccuracyCallsExpectedCost.put("1", new BigDecimal(7200));
+        peakPeriodMinuteAccuracyCallsExpectedCost.put("2", new BigDecimal(10800));
+        peakPeriodMinuteAccuracyCallsExpectedCost.put("3", new BigDecimal(2880));
+
 
         return Arrays.asList(new Object[][] {
             { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,
@@ -269,7 +289,9 @@ public class BillingSystemTest {
             { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,
                     multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods },
             { "continuousPeakMultiDayOverlappingCalls", continuousPeakMultiDayOverlappingCalls,
-                    continuousPeakMultiDayOverlappingCallsExpectedCost, continuousPeakPeriods }
+                    continuousPeakMultiDayOverlappingCallsExpectedCost, continuousPeakPeriods },
+            { "peakPeriodMinuteAccuracyCalls", peakPeriodMinuteAccuracyCalls,
+                    peakPeriodMinuteAccuracyCallsExpectedCost, multiPeakPeriods }
         });
     }
 
