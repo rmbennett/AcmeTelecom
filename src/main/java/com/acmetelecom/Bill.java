@@ -51,9 +51,9 @@ public class Bill {
         private Call call;
         private BigDecimal callCost;
 
-        private int peakCallTime;
+        private long peakCallTime;
 
-        public LineItem(Call call, BigDecimal callCost, int peakCallTime) {
+        public LineItem(Call call, BigDecimal callCost, long peakCallTime) {
             this.call = call;
             this.callCost = callCost;
             this.peakCallTime = peakCallTime;
@@ -79,7 +79,7 @@ public class Bill {
             return callCost;
         }
 
-        public int getPeakCallTime() {
+        public long getPeakCallTime() {
             return peakCallTime;
         }
     }
