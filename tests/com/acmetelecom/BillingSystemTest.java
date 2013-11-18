@@ -112,7 +112,7 @@ public class BillingSystemTest {
                 .setExpectedPeakTime(0).add();
 
         singlePeakMultiDayNonOverlappingCalls.setCaller("2").setCallee("1")
-                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 3:00:00")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 15:00:00")
                 .setExpectedPeakTime(10800).add();
 
         singlePeakMultiDayNonOverlappingCalls.setCaller("3").setCallee("2")
