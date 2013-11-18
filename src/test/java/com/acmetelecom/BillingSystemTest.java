@@ -239,7 +239,7 @@ public class BillingSystemTest {
 
         continuousPeakMultiDayOverlappingCalls.setCaller("2").setCallee("1")
                 .setStartDate("1-11-2013 19:00:00").setEndDate("2-11-2013 09:00:00")
-                .setExpectedPeakTime(18000).add();
+                .setExpectedPeakTime(43200).add();
 
         continuousPeakMultiDayOverlappingCalls.setCaller("3").setCallee("2")
                 .setStartDate("1-11-2013 19:00:00").setEndDate("2-11-2013 06:00:00")
@@ -247,7 +247,7 @@ public class BillingSystemTest {
 
         HashMap<String, BigDecimal> continuousPeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
         continuousPeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(18000));
-        continuousPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(12960));
+        continuousPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(15120));
         continuousPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(29160));
 
         // peakPeriodMinuteAccuracy test data
