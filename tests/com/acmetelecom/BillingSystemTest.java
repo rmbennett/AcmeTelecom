@@ -60,63 +60,191 @@ public class BillingSystemTest {
         List<PeakPeriod> singlePeakPeriods = new ArrayList<PeakPeriod>();
         singlePeakPeriods.add(new PeakPeriod(7, 19));
 
-        List<PeakPeriod> twoPeakPeriods = new ArrayList<PeakPeriod>();
-        twoPeakPeriods.add(new PeakPeriod(6, 10));
-        twoPeakPeriods.add(new PeakPeriod(20, 21));
+        List<PeakPeriod> multiPeakPeriods = new ArrayList<PeakPeriod>();
+        multiPeakPeriods.add(new PeakPeriod(6, 10));
+        multiPeakPeriods.add(new PeakPeriod(20, 21));
 
-        List<PeakPeriod> threePeakPeriods = new ArrayList<PeakPeriod>();
-        threePeakPeriods.add(new PeakPeriod(6, 10));
-        threePeakPeriods.add(new PeakPeriod(13, 14));
-        threePeakPeriods.add(new PeakPeriod(20, 21));
+        // SinglePeakPeriodSingleDayNonOverlapping test data
+        CallBuilder singlePeakSingleDayNonOverlappingCalls = new CallBuilder();
 
-        // Off-peak test data
-//        ArrayList<Call> offPeakCalls = new ArrayList<Call>();
-//
-//        offPeakCalls.add(makeCall("1", "2", 1, 20, 00, 1, 20, 05));
-//        offPeakCalls.add(makeCall("2", "1", 1, 20, 10, 1, 20, 15));
-//        offPeakCalls.add(makeCall("3", "2", 1, 20, 20, 1, 20, 25));
-//
-//        HashMap<String, BigDecimal> offPeakExpectedCost = new HashMap<String, BigDecimal>();
-//        offPeakExpectedCost.put("1", new BigDecimal(60));
-//        offPeakExpectedCost.put("2", new BigDecimal(0));
-//        offPeakExpectedCost.put("3", new BigDecimal(0));
-//
-//        // Peak test data
-//        ArrayList<Call> peakCalls = new ArrayList<Call>();
-//
-//        peakCalls.add(makeCall("1", "2", 1, 16, 00, 1, 16, 5));
-//        peakCalls.add(makeCall("2", "1", 1, 16, 10, 1, 16, 15));
-//        peakCalls.add(makeCall("3", "2", 1, 16, 20, 1, 16, 25));
-//
-//        HashMap<String, BigDecimal> peakExpectedCost = new HashMap<String, BigDecimal>();
-//        peakExpectedCost.put("1", new BigDecimal(150));
-//        peakExpectedCost.put("2", new BigDecimal(90));
-//        peakExpectedCost.put("3", new BigDecimal(240));
+        singlePeakSingleDayNonOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 06:00:00").setEndDate("1-11-2013 06:38:00")
+                .setExpectedPeakTime(0).add();
 
-        // Hybrid test data
-        CallBuilder hybridCalls = new CallBuilder();
+        singlePeakSingleDayNonOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 15:00:00")
+                .setExpectedPeakTime(10800).add();
 
-        hybridCalls.setCaller("1").setCallee("2")
+        singlePeakSingleDayNonOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 20:00:00").setEndDate("1-11-2013 22:00:00")
+                .setExpectedPeakTime(0).add();
+
+        HashMap<String, BigDecimal> singlePeakSingleDayNonOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        singlePeakSingleDayNonOverlappingCallsExpectedCost.put("1", new BigDecimal(456));
+        singlePeakSingleDayNonOverlappingCallsExpectedCost.put("2", new BigDecimal(3240));
+        singlePeakSingleDayNonOverlappingCallsExpectedCost.put("3", new BigDecimal(720));
+
+        // singlePeakSingleDayOverlapping test data
+        CallBuilder singlePeakSingleDayOverlappingCalls = new CallBuilder();
+
+        singlePeakSingleDayOverlappingCalls.setCaller("1").setCallee("2")
                 .setStartDate("1-11-2013 06:00:00").setEndDate("1-11-2013 20:00:00")
                 .setExpectedPeakTime(43200).add();
 
-        hybridCalls.setCaller("2").setCallee("1")
+        singlePeakSingleDayOverlappingCalls.setCaller("2").setCallee("1")
                 .setStartDate("1-11-2013 18:58:00").setEndDate("1-11-2013 19:03:00")
                 .setExpectedPeakTime(120).add();
 
-        hybridCalls.setCaller("3").setCallee("2")
+        singlePeakSingleDayOverlappingCalls.setCaller("3").setCallee("2")
                 .setStartDate("1-11-2013 06:58:00").setEndDate("1-11-2013 07:03:00")
                 .setExpectedPeakTime(180).add();
 
-        HashMap<String, BigDecimal> hybridExpectedCost = new HashMap<String, BigDecimal>();
-        hybridExpectedCost.put("1", new BigDecimal(23040));
-        hybridExpectedCost.put("2", new BigDecimal(90));
-        hybridExpectedCost.put("3", new BigDecimal(156));
+        HashMap<String, BigDecimal> singlePeakSingleDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        singlePeakSingleDayOverlappingCallsExpectedCost.put("1", new BigDecimal(23040));
+        singlePeakSingleDayOverlappingCallsExpectedCost.put("2", new BigDecimal(90));
+        singlePeakSingleDayOverlappingCallsExpectedCost.put("3", new BigDecimal(156));
+
+        // SinglePeakPeriodMultiDayNonOverlapping test data
+        CallBuilder singlePeakMultiDayNonOverlappingCalls = new CallBuilder();
+
+        singlePeakMultiDayNonOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 20:00:00").setEndDate("2-11-2013 05:12:00")
+                .setExpectedPeakTime(0).add();
+
+        singlePeakMultiDayNonOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 15:00:00")
+                .setExpectedPeakTime(10800).add();
+
+        singlePeakMultiDayNonOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 23:00:00").setEndDate("2-11-2013 1:00:00")
+                .setExpectedPeakTime(0).add();
+
+        HashMap<String, BigDecimal> singlePeakMultiDayNonOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        singlePeakMultiDayNonOverlappingCallsExpectedCost.put("1", new BigDecimal(6624));
+        singlePeakMultiDayNonOverlappingCallsExpectedCost.put("2", new BigDecimal(3240));
+        singlePeakMultiDayNonOverlappingCallsExpectedCost.put("3", new BigDecimal(720));
+
+        // singlePeakMultiDayOverlapping test data
+        CallBuilder singlePeakMultiDayOverlappingCalls = new CallBuilder();
+
+        singlePeakMultiDayOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 06:00:00").setEndDate("3-11-2013 20:00:00")
+                .setExpectedPeakTime(129600).add();
+
+        singlePeakMultiDayOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("2-11-2013 12:00:00")
+                .setExpectedPeakTime(43200).add();
+
+        singlePeakMultiDayOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 15:00:00").setEndDate("2-11-2013 06:00:00")
+                .setExpectedPeakTime(14400).add();
+
+        HashMap<String, BigDecimal> singlePeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        singlePeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(83520));
+        singlePeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(25920));
+        singlePeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(15480));
+
+
+
+        // MultiPeakPeriodSingleDayNonOverlapping test data
+        CallBuilder multiPeakSingleDayNonOverlappingCalls = new CallBuilder();
+
+        multiPeakSingleDayNonOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 13:00:00").setEndDate("1-11-2013 19:00:00")
+                .setExpectedPeakTime(0).add();
+
+        multiPeakSingleDayNonOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 7:00:00").setEndDate("1-11-2013 9:30:00")
+                .setExpectedPeakTime(9000).add();
+
+        multiPeakSingleDayNonOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 20:15:00").setEndDate("1-11-2013 20:45:00")
+                .setExpectedPeakTime(1800).add();
+
+        HashMap<String, BigDecimal> multiPeakSingleDayNonOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        multiPeakSingleDayNonOverlappingCallsExpectedCost.put("1", new BigDecimal(4320));
+        multiPeakSingleDayNonOverlappingCallsExpectedCost.put("2", new BigDecimal(2700));
+        multiPeakSingleDayNonOverlappingCallsExpectedCost.put("3", new BigDecimal(1440));
+
+        // multiPeakSingleDayOverlapping test data
+        CallBuilder multiPeakSingleDayOverlappingCalls = new CallBuilder();
+
+        multiPeakSingleDayOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 05:00:00").setEndDate("1-11-2013 22:00:00")
+                .setExpectedPeakTime(18000).add();
+
+        multiPeakSingleDayOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("1-11-2013 20:30:00")
+                .setExpectedPeakTime(1800).add();
+
+        multiPeakSingleDayOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 08:00:00").setEndDate("1-11-2013 20:10:00")
+                .setExpectedPeakTime(7800).add();
+
+        HashMap<String, BigDecimal> multiPeakSingleDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        multiPeakSingleDayOverlappingCallsExpectedCost.put("1", new BigDecimal(17640));
+        multiPeakSingleDayOverlappingCallsExpectedCost.put("2", new BigDecimal(9180));
+        multiPeakSingleDayOverlappingCallsExpectedCost.put("3", new BigDecimal(9840));
+
+        // multiPeakPeriodMultiDayNonOverlapping test data
+        CallBuilder multiPeakMultiDayNonOverlappingCalls = new CallBuilder();
+
+        multiPeakMultiDayNonOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 13:00:00").setEndDate("1-11-2013 19:00:00")
+                .setExpectedPeakTime(0).add();
+
+        multiPeakMultiDayNonOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 22:00:00").setEndDate("2-11-2013 5:00:00")
+                .setExpectedPeakTime(0).add();
+
+        multiPeakMultiDayNonOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 7:00:00").setEndDate("1-11-2013 9:30:00")
+                .setExpectedPeakTime(9000).add();
+
+        HashMap<String, BigDecimal> multiPeakMultiDayNonOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        multiPeakMultiDayNonOverlappingCallsExpectedCost.put("1", new BigDecimal(4320));
+        multiPeakMultiDayNonOverlappingCallsExpectedCost.put("2", new BigDecimal(7560));
+        multiPeakMultiDayNonOverlappingCallsExpectedCost.put("3", new BigDecimal(7200));
+
+        // multiPeakMultiDayOverlapping test data
+        CallBuilder multiPeakMultiDayOverlappingCalls = new CallBuilder();
+
+        multiPeakMultiDayOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 05:00:00").setEndDate("2-11-2013 22:00:00")
+                .setExpectedPeakTime(36000).add();
+
+        multiPeakMultiDayOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 12:00:00").setEndDate("2-11-2013 12:00:00")
+                .setExpectedPeakTime(18000).add();
+
+        multiPeakMultiDayOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 20:30:00").setEndDate("2-11-2013 08:00:00")
+                .setExpectedPeakTime(9000).add();
+
+        HashMap<String, BigDecimal> multiPeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        multiPeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(40320));
+        multiPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(25920));
+        multiPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(10440));
+
+
 
         return Arrays.asList(new Object[][] {
-//                { "Off-peak", offPeakCalls, offPeakExpectedCost, singlePeakPeriods },
-//                { "Peak", peakCalls, peakExpectedCost, singlePeakPeriods },
-                { "Hybrid", hybridCalls, hybridExpectedCost, singlePeakPeriods }
+            { "singlePeakSingleDayNonOverlappingCalls", singlePeakSingleDayNonOverlappingCalls,
+                    singlePeakSingleDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakSingleDayOverlappingCalls", singlePeakSingleDayOverlappingCalls,
+                    singlePeakSingleDayOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakMultiDayNonOverlappingCalls", singlePeakMultiDayNonOverlappingCalls,
+                    singlePeakMultiDayNonOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "singlePeakMultiDayOverlappingCalls", singlePeakMultiDayOverlappingCalls,
+                    singlePeakMultiDayOverlappingCallsExpectedCost, singlePeakPeriods },
+            { "multiPeakSingleDayNonOverlappingCalls", multiPeakSingleDayNonOverlappingCalls,
+                    multiPeakSingleDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakSingleDayOverlappingCalls", multiPeakSingleDayOverlappingCalls,
+                    multiPeakSingleDayOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,
+                    multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,
+                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
         });
     }
 
