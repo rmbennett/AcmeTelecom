@@ -64,6 +64,10 @@ public class BillingSystemTest {
         multiPeakPeriods.add(new PeakPeriod(6, 10));
         multiPeakPeriods.add(new PeakPeriod(20, 21));
 
+        List<PeakPeriod> continuousPeakPeriods = new ArrayList<PeakPeriod>();
+        continuousPeakPeriods.add(new PeakPeriod(0, 8));
+        continuousPeakPeriods.add(new PeakPeriod(20, 24));
+
         // SinglePeakPeriodSingleDayNonOverlapping test data
         CallBuilder singlePeakSingleDayNonOverlappingCalls = new CallBuilder();
 
@@ -226,6 +230,25 @@ public class BillingSystemTest {
         multiPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(25920));
         multiPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(10440));
 
+        // continuousPeakMultiDayOverlapping test data
+        CallBuilder continuousPeakMultiDayOverlappingCalls = new CallBuilder();
+
+        continuousPeakMultiDayOverlappingCalls.setCaller("1").setCallee("2")
+                .setStartDate("1-11-2013 21:00:00").setEndDate("2-11-2013 07:00:00")
+                .setExpectedPeakTime(36000).add();
+
+        continuousPeakMultiDayOverlappingCalls.setCaller("2").setCallee("1")
+                .setStartDate("1-11-2013 19:00:00").setEndDate("2-11-2013 09:00:00")
+                .setExpectedPeakTime(18000).add();
+
+        continuousPeakMultiDayOverlappingCalls.setCaller("3").setCallee("2")
+                .setStartDate("1-11-2013 19:00:00").setEndDate("2-11-2013 06:00:00")
+                .setExpectedPeakTime(36000).add();
+
+        HashMap<String, BigDecimal> continuousPeakMultiDayOverlappingCallsExpectedCost = new HashMap<String, BigDecimal>();
+        continuousPeakMultiDayOverlappingCallsExpectedCost.put("1", new BigDecimal(18000));
+        continuousPeakMultiDayOverlappingCallsExpectedCost.put("2", new BigDecimal(12960));
+        continuousPeakMultiDayOverlappingCallsExpectedCost.put("3", new BigDecimal(29160));
 
 
         return Arrays.asList(new Object[][] {
@@ -244,7 +267,9 @@ public class BillingSystemTest {
             { "multiPeakMultiDayNonOverlappingCalls", multiPeakMultiDayNonOverlappingCalls,
                     multiPeakMultiDayNonOverlappingCallsExpectedCost, multiPeakPeriods },
             { "multiPeakMultiDayOverlappingCalls", multiPeakMultiDayOverlappingCalls,
-                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods }
+                    multiPeakMultiDayOverlappingCallsExpectedCost, multiPeakPeriods },
+            { "continuousPeakMultiDayOverlappingCalls", continuousPeakMultiDayOverlappingCalls,
+                    continuousPeakMultiDayOverlappingCallsExpectedCost, continuousPeakPeriods }
         });
     }
 
