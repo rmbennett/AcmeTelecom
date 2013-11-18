@@ -31,7 +31,7 @@ class DaytimePeakPeriod {
     {
         int fullBillingsDays = (int) Math.floor(call.durationSeconds() / (24 * 60 * 60));
         int startPeakIndex = 0;
-        int endPeakIndex = -1;
+        int endPeakIndex = 0;
 
         int fullPeakTimePerDay = 0;
         for (int i = 0; i < peakPeriodList.size(); i++)
@@ -59,10 +59,10 @@ class DaytimePeakPeriod {
                 break;
             }
             //Starts between this peakTime and the next (out of peak)
-            if (startTime >= peakPeriodList.get(i).getEndHour() &&
-                    startTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())
+            if (startTime >= peakPeriodList.get(i).getEndHour() /*&&
+                    startTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour()*/)
             {
-                startPeakIndex = (i+1)% peakPeriodList.size();
+                startPeakIndex = Math.max((i+1),peakPeriodList.size());
                 break;
             }
         }
@@ -82,27 +82,36 @@ class DaytimePeakPeriod {
                 endOutOfPeakTime = false;
                 break;
             }
-            //Ends between this peakTime and the next (out of peak)
-            if (endTime >= peakPeriodList.get(i).getEndHour() &&
-                    endTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())
+
+            //Ends after this peakTime the next (out of peak)
+            if (endTime >= peakPeriodList.get(i).getEndHour()) /*&&
+                    endTime < peakPeriodList.get((i+1)% peakPeriodList.size()).getStartHour())*/
             {
-                endPeakIndex = (i+1)% peakPeriodList.size();
-                break;
+                endPeakIndex = Math.min((i+1),peakPeriodList.size());
             }
 
         }
+
+        //Check if we rolled over a day
+/*        if (startPeakIndex > endPeakIndex)
+            endPeakIndex*/
 
         //Call was completely outside peak period (between 2 peak periods)
         if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == endPeakIndex)
             return (fullBillingsDays * fullPeakTimePerDay)/1000;
 
+//        if (endOutOfPeakTime && startOutOfPeakTime && startPeakIndex == 0 && endPeakIndex == -1)
+//            return (fullBillingsDays * fullPeakTimePerDay)/1000;
+
         int peakPeriodForLastDay = 0;
         int i = startPeakIndex;
+        int stop = 0;
+        stop = (!endOutOfPeakTime) ?  endPeakIndex + 1 : endPeakIndex;
         do
         {
             peakPeriodForLastDay += (peakPeriodList.get(i).getEndHour() - peakPeriodList.get(i).getStartHour())* 3600000;
             i++;
-        } while(i < endPeakIndex);
+        } while(i < stop);
 
 
         if (!startOutOfPeakTime)
