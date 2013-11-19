@@ -41,11 +41,11 @@ class HtmlPrinter implements Printer {
     }
 
     private String th(String text) {
-        return "<th width=\"160\">" + text + "</th>\n";
+        return "<th width=\"160\">" + text + "</th>";
     }
 
     private String td(String text) {
-        return "<td>" + text + "</td>\n";
+        return "<td>" + text + "</td>";
     }
 
     public String total(String total) {

@@ -2,13 +2,6 @@ package com.acmetelecom;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rmb209
- * Date: 07/11/13
- * Time: 10:42
- * To change this template use File | Settings | File Templates.
- */
 public class Runner {
 
     public static void main(String[] args) throws Exception {
