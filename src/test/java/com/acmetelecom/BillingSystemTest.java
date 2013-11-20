@@ -366,7 +366,9 @@ public class BillingSystemTest {
      * Call Builder class to make it easier to make calls
      */
     private static class CallBuilder {
-        public static DateFormat formatter = new SimpleDateFormat("d-M-y H:m:s");
+        public static Locale locale = new Locale("en", "GB");
+        public static DateFormat formatter = new SimpleDateFormat("d-M-y H:m:s",
+                locale);
 
         // "Holder" members
         private String caller, callee, startDate, endDate;
