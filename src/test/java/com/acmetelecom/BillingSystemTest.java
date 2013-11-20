@@ -67,6 +67,17 @@ public class BillingSystemTest {
 
     }
 
+    // Assert that the translation of string plans are what we expect
+    @BeforeClass
+    public static void assertPlanTariffTranslation() {
+        assertEquals("Standard plan tariff translation",
+                Tariff.valueOf("Standard"), Tariff.Standard);
+        assertEquals("Business plan tariff translation",
+                Tariff.valueOf("Business"), Tariff.Business);
+        assertEquals("Leisure plan tariff translation",
+                Tariff.valueOf("Leisure"), Tariff.Leisure);
+    }
+
     // This method provides the test and expected data for the parameterised
     // test of the BillingSystem class
     @Parameterized.Parameters
