@@ -366,7 +366,8 @@ public class BillingSystemTest {
      * Call Builder class to make it easier to make calls
      */
     private static class CallBuilder {
-        public static Locale locale = new Locale("en", "GB");
+        public static Locale locale = new Locale.Builder()
+                .setLanguage("en").setRegion("GB").build();
         public static DateFormat formatter = new SimpleDateFormat("d-M-y H:m:s",
                 locale);
 
