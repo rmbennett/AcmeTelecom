@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 /*
     This test class tests the BillingSystem's calculation of bill costs in
-    concert with DaytimePeakPeriod's calculation of peak duration for calls.
+    concert with PeakPeriodCalculator's calculation of peak duration for calls.
 
     Before the tests are run, we assert that the expected behaviour of the
     external.jar classes have not changed in terms of the expected tariff rates

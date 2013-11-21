@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
-class DaytimePeakPeriod {
+class PeakPeriodCalculator {
     private List<PeakPeriod> peakPeriodList;
 
     public void addPeakTime(PeakPeriod peakTime)
@@ -19,11 +19,11 @@ class DaytimePeakPeriod {
         peakPeriodList.remove(pos);
     }
 
-    public DaytimePeakPeriod() {
+    public PeakPeriodCalculator() {
         this(new ArrayList<PeakPeriod>());
     }
 
-    public DaytimePeakPeriod(List<PeakPeriod> peakPeriods)  {
+    public PeakPeriodCalculator(List<PeakPeriod> peakPeriods)  {
         peakPeriodList = peakPeriods;
     }
 

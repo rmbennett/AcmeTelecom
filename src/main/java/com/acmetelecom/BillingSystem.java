@@ -87,7 +87,7 @@ public class BillingSystem {
             BigDecimal cost;
 
             // New changes in regulations means customer can only be charged for peak tariff price for the period they are in the peak period
-            int peakCallTime = new DaytimePeakPeriod(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
+            int peakCallTime = new PeakPeriodCalculator(peakPeriods).getTimeInSecondsInCallDuringPeak(call);
 
             cost = new BigDecimal(call.durationSeconds() - peakCallTime).multiply(tariff.offPeakRate());
             cost = cost.add(new BigDecimal(peakCallTime).multiply(tariff.peakRate()));
